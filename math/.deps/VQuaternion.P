@@ -1,0 +1,4 @@
+VQuaternion.o: VQuaternion.cpp VMath.h \
+  /home/josh/code/libs/viper3d/base/VGlobals.h
+VQuaternion.cpp VMath.h :
+  /home/josh/code/libs/viper3d/base/VGlobals.h :

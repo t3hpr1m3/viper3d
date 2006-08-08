@@ -1,0 +1,2 @@
+VLog.o: VLog.cpp VLog.h
+VLog.cpp VLog.h :

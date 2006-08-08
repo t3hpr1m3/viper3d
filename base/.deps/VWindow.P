@@ -1,0 +1,16 @@
+VWindow.o: VWindow.cpp VWindow.h \
+  /home/josh/code/libs/viper3d/util/VDynamicLib.h \
+  /home/josh/code/libs/viper3d/base/VGlobals.h \
+  /home/josh/code/libs/viper3d/util/VString.h \
+  /home/josh/code/libs/viper3d/interfaces/VWindowSystem.h \
+  /home/josh/code/libs/viper3d/base/VGlobals.h \
+  /home/josh/code/libs/viper3d/base/VTypes.h \
+  /home/josh/code/libs/viper3d/util/VLog.h
+VWindow.cpp VWindow.h :
+  /home/josh/code/libs/viper3d/util/VDynamicLib.h :
+  /home/josh/code/libs/viper3d/base/VGlobals.h :
+  /home/josh/code/libs/viper3d/util/VString.h :
+  /home/josh/code/libs/viper3d/interfaces/VWindowSystem.h :
+  /home/josh/code/libs/viper3d/base/VGlobals.h :
+  /home/josh/code/libs/viper3d/base/VTypes.h :
+  /home/josh/code/libs/viper3d/util/VLog.h :

@@ -1,0 +1,8 @@
+VMatrix.o: VMatrix.cpp VMath.h \
+  /home/josh/code/libs/viper3d/base/VGlobals.h \
+  /home/josh/code/libs/viper3d/util/VCPU.h \
+  /home/josh/code/libs/viper3d/base/VTypes.h
+VMatrix.cpp VMath.h :
+  /home/josh/code/libs/viper3d/base/VGlobals.h :
+  /home/josh/code/libs/viper3d/util/VCPU.h :
+  /home/josh/code/libs/viper3d/base/VTypes.h :

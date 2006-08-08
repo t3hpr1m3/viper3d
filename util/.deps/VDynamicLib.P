@@ -1,0 +1,4 @@
+VDynamicLib.o: VDynamicLib.cpp VString.h VDynamicLib.h \
+  /home/josh/code/libs/viper3d/base/VGlobals.h VLog.h
+VDynamicLib.cpp VString.h VDynamicLib.h :
+  /home/josh/code/libs/viper3d/base/VGlobals.h VLog.h :

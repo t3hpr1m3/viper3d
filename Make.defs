@@ -1,0 +1,56 @@
+#===========================================================================#
+#																			#
+#	Viper3D Global makefile variables										#
+#																			#
+#	Author:	Josh Williams													#
+#																			#
+#	Date:	06-Sep-2004														#
+#																			#
+#===========================================================================#
+#																			#
+# 	This file is part of the Viper3D Game Engine.							#
+#																			#
+#	Copyright (C) 2004 UDP Games   All Rights Reserved.						#
+#																			#
+#===========================================================================#
+
+# Compiler
+CC = gcc
+CXX = g++
+LD = ar cru
+RM = rm -f
+RANLIB = ranlib
+
+# Compiler flags
+#CPPFLAGS = -Wall -pedantic -ansi -O2
+CPPFLAGS = -Wall -pedantic -ansi -O2 -DDEBUG
+#CPPFLAGS = -Wall -pedantic -ansi -O2 -g -DDEBUG
+#CPPFLAGS = -Wall -pedantic -ansi -O2 -DBENCHMARK
+
+# Global include directories
+INCLUDE_DIRS := \
+			-I$(BASE_DIR)/base \
+			-I$(BASE_DIR)/util \
+			-I$(BASE_DIR)/math \
+			-I$(BASE_DIR)/interfaces
+
+COMPILE_CPP = $(CXX) -MMD $(CPPFLAGS) $(INCLUDE_DIRS) -c -o
+COMPILE_CPP_SO = $(CXX) -MMD $(CPPFLAGS) $(INCLUDE_DIRS) -fPIC -c -o
+
+# Library output directory
+OUTPUT_DIR := $(BASE_DIR)/libs
+
+LIB = $(OUTPUT_DIR)/$(LIBRARY)
+
+# Dependency generation
+DEPDIR = .deps
+MAKEDEPEND =	cp $*.d $(DEPDIR)/$*.P; \
+				sed -e 's/\#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
+				-e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $(DEPDIR)/$*.P; \
+				$(RM) $*.d
+
+# Object Files
+OBJS = $(SRCS:.cpp=.o)
+
+
+

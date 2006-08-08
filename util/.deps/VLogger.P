@@ -1,0 +1,2 @@
+VLogger.o: VLogger.cpp /mnt/code/libs/viper3d/base/Globals.h VLogger.h
+VLogger.cpp /mnt/code/libs/viper3d/base/Globals.h VLogger.h :

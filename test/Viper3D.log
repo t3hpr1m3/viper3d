@@ -1,0 +1,18 @@
+************************************************
+*           Log Opened                         *
+************************************************
+[     VCPU     ] ============ CPU Info =============
+[     VCPU     ] Vendor:         GenuineIntel
+[     VCPU     ] 
+[     VCPU     ] Base features:  SSE SSE2 MMX
+[     VCPU     ] Ext features:  
+[     VCPU     ] OS SSE Support: Yes
+[     VCPU     ] ===================================
+[   VWindow    ] Loading X window system library
+[ VDynamicLib  ] Loading ./libs/libVXWindow.so
+[   VWindow    ] Library loaded successfully
+[ VInput ] Loading X input system
+[ VDynamicLib  ] Loading ./libs/libVXInput.so
+[ VInput ] Library loaded successfully
+[ VInput ] Releasing device...
+[   VWindow    ] Releasing device...
