@@ -44,13 +44,12 @@ LIB = $(OUTPUT_DIR)/$(LIBRARY)
 
 # Dependency generation
 DEPDIR = .deps
-MAKEDEPEND =	cp $*.d $(DEPDIR)/$*.P; \
+df = $(DEPDIR)/$(*F)
+MAKEDEPEND =	mkdir -p $(DEPDIR); \
+				cp $*.d $(df).P; \
 				sed -e 's/\#.*//' -e 's/^[^:]*: *//' -e 's/ *\\$$//' \
-				-e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $(DEPDIR)/$*.P; \
+				-e '/^$$/ d' -e 's/$$/ :/' < $*.d >> $(df).P; \
 				$(RM) $*.d
 
 # Object Files
 OBJS = $(SRCS:.cpp=.o)
-
-
-
