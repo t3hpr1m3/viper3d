@@ -489,7 +489,6 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 			ret
 		}
 #elif VIPER_PLATFORM == PLATFORM_APPLE
-#elif VIPER_PLATFORM == PLATFORM_LINUX
 		const VMatrix *pSrc1 = this;
 		const VMatrix *pSrc2 = &mat;
 		VMatrix *pDest = &mResult;
@@ -577,6 +576,7 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 			: "eax", "edx", "ecx", "memory"
 		);
 
+#elif VIPER_PLATFORM == PLATFORM_LINUX
 #endif
 	}
 	else

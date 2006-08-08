@@ -24,11 +24,6 @@ const VVector	VVector::VECTOR_UNIT_X(1, 0, 0);
 const VVector	VVector::VECTOR_UNIT_Y(0, 1, 0);
 const VVector	VVector::VECTOR_UNIT_Z(0, 0, 1);
 const VVector	VVector::VECTOR_UNIT_SCALE(1, 1, 1);
-const VMatrix 	VVector::MATRIX_ZERO(
-					0.0f, 0.0f, 0.0f, 0.0f,
-					0.0f, 0.0f, 0.0f, 0.0f,
-					0.0f, 0.0f, 0.0f, 0.0f,
-					0.0f, 0.0f, 0.0f, 0.0f);
 
 /********************************************************************
  *          C O N S T R U C T I O N / D E S T R U C T I O N         *

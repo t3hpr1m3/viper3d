@@ -243,9 +243,9 @@ public:
 	void			SetTranslation(const VVector& vc, bool EraseContent=false);
 	VVector			GetTranslation();
 	void			Billboard(const VVector& vPos, const VVector& vDir,
-								VVector vWorldUp = VMath::VECTOR_UNIT_Y);
+								VVector vWorldUp = VVector::VECTOR_UNIT_Y);
 	void			LookAt(const VVector& vPos, const VVector& vLookAt,
-								VVector vWorldUp = VMath::VECTOR_UNIT_Y);
+								VVector vWorldUp = VVector::VECTOR_UNIT_Y);
 	void			TransposeOf(const VMatrix& mat);
 	void			InverseOf(const VMatrix& mat);
 
