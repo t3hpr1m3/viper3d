@@ -1,6 +1,0 @@
-VVector.o: VVector.cpp VMath.h \
-  /home/josh/code/libs/viper3d/base/VGlobals.h \
-  /home/josh/code/libs/viper3d/util/VCPU.h
-VVector.cpp VMath.h :
-  /home/josh/code/libs/viper3d/base/VGlobals.h :
-  /home/josh/code/libs/viper3d/util/VCPU.h :

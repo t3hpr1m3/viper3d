@@ -1,2 +1,0 @@
-VObb.o: VObb.cpp VMath.h /home/josh/code/libs/viper3d/base/VGlobals.h
-VObb.cpp VMath.h /home/josh/code/libs/viper3d/base/VGlobals.h :

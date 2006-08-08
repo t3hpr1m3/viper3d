@@ -1,2 +1,0 @@
-VPlane.o: VPlane.cpp VMath.h /home/josh/code/libs/viper3d/base/VGlobals.h
-VPlane.cpp VMath.h /home/josh/code/libs/viper3d/base/VGlobals.h :

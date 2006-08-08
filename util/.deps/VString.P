@@ -1,2 +1,0 @@
-VString.o: VString.cpp VString.h
-VString.cpp VString.h :
