@@ -489,13 +489,13 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 			ret
 		}
 #elif VIPER_PLATFORM == PLATFORM_APPLE
+#elif VIPER_PLATFORM == PLATFORM_LINUX
 		const VMatrix *pSrc1 = this;
 		const VMatrix *pSrc2 = &mat;
 		VMatrix *pDest = &mResult;
-		__asm__ __volatile__ (
-			".intel_syntax noprefix\n\t"
-			"mov %0, 	%%edx\n\t"
-			"mov %1,	%%ecx\n\t"
+		asm (
+			"mov %0, 	%%edx;"
+			"mov %1,	%%ecx;"
 			"mov %2,	%%eax\n\t"
 			"movss xmm0, dword ptr [edx]\n\t"
 			"movups xmm1, xmmword ptr [ecx]\n\t"
@@ -576,7 +576,6 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 			: "eax", "edx", "ecx", "memory"
 		);
 
-#elif VIPER_PLATFORM == PLATFORM_LINUX
 #endif
 	}
 	else

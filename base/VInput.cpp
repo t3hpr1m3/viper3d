@@ -15,7 +15,7 @@
 namespace UDP
 {
 
-static char __CLASS__[] = "[ VInput ]";
+static char __CLASS__[] = "[    VInput    ]";
 
 /********************************************************************
  *          C O N S T R U C T I O N / D E S T R U C T I O N         *
