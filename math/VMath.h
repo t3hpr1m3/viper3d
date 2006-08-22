@@ -109,8 +109,6 @@ public:
 	static const float PI;
 	static const float TWO_PI;
 	static const float HALF_PI;
-	static const VMatrix MATRIX_ZERO;
-	static const VMatrix MATRIX_IDENTITY;
 	static const VQuaternion QUATERNION_ZERO;
 	static const VQuaternion QUATERNION_IDENTITY;
 };
@@ -179,6 +177,7 @@ public:
 	VVector			operator*(const VMatrix& m) const;
 	VVector			operator+(const VVector &vec) const;
 	VVector			operator-(const VVector &vec) const;
+	VVector			operator-() const;
 	friend ostream&	operator<<(ostream& os, const VVector& vec);
 
 public:
@@ -192,6 +191,12 @@ public:
 	static const VVector VECTOR_UNIT_Z;
 	static const VVector VECTOR_UNIT_SCALE;
 };
+
+inline
+VVector VVector::operator-() const
+{
+	return VVector(-x, -y, -z);
+}
 
 inline
 ostream& operator<<(ostream& os, const VVector& vec)
@@ -248,6 +253,7 @@ public:
 								VVector vWorldUp = VVector::VECTOR_UNIT_Y);
 	void			TransposeOf(const VMatrix& mat);
 	void			InverseOf(const VMatrix& mat);
+	VMatrix			Transpose() const;
 
 	/*==================================*
 	 *			   OPERATORS			*
@@ -255,6 +261,7 @@ public:
 	VMatrix			operator*(const VMatrix& mat) const;
 	VVector			operator*(const VVector& vec) const;
 	void			operator=(const VMatrix &mat);
+	VMatrix			operator-() const;
 	void			MakeGLMatrix(float gl_matrix[16]);
 
 protected:
@@ -278,6 +285,9 @@ protected:
 		float m[4][4];
 		float _m[16];
 	};
+public:
+	static const VMatrix MATRIX_ZERO;
+	static const VMatrix MATRIX_IDENTITY;
 };
 
 /*============================================================================*/
@@ -338,7 +348,8 @@ public:
 	VQuaternion&	operator/=(const float& s);
 	VQuaternion		operator/(const float& s) const;
 
-	VQuaternion		operator*(const VVector& vec) const;
+	//VQuaternion		operator*(const VVector& vec) const;
+	VVector			operator*(const VVector& pVec) const;
 
 	VQuaternion&	operator+=(const VQuaternion& q);
 	VQuaternion		operator+(const VQuaternion& q) const;

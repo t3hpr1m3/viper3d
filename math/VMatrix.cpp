@@ -16,6 +16,18 @@
 namespace UDP
 {
 
+const VMatrix VMatrix::MATRIX_ZERO (
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0,
+		0, 0, 0, 0);
+
+const VMatrix VMatrix::MATRIX_IDENTITY (
+		1, 0, 0, 0,
+		0, 1, 0, 0,
+		0, 0, 1, 0,
+		0, 0, 0, 1);
+
 /********************************************************************
  *          C O N S T R U C T I O N / D E S T R U C T I O N         *
  ********************************************************************/
@@ -116,7 +128,7 @@ void VMatrix::Rota(const VVector &vec)
 {
 	float sr, sp, sy, cr, cp, cy;
 
-	*this = VMath::MATRIX_IDENTITY;
+	*this = VMatrix::MATRIX_IDENTITY;
 
 	sy = VMath::Sin(vec.z);
 	cy = VMath::Cos(vec.z);
@@ -180,7 +192,7 @@ void VMatrix::Translate(const float& dx, const float& dy, const float& dz)
 void VMatrix::SetTranslation(const VVector& vec, bool EraseContent /*=false*/)
 {
 	if (EraseContent)
-		*this = VMath::MATRIX_IDENTITY;
+		*this = VMatrix::MATRIX_IDENTITY;
 
 	m[3][0] = vec.x;
 	m[3][1] = vec.y;
@@ -255,6 +267,19 @@ void VMatrix::TransposeOf(const VMatrix& mat)
 	m[1][3] = mat[3][1];
 	m[2][3] = mat[3][2];
 	m[3][3] = mat[3][3];
+}
+
+VMatrix VMatrix::Transpose() const
+{
+	VMatrix vTranspose;
+
+	for (int vRow = 0; vRow < 3; vRow++)
+	{
+		for (int vCol = 0; vCol < 3; vCol++)
+			vTranspose[vRow][vCol] = m[vCol][vRow];
+	}
+
+	return vTranspose;
 }
 
 void VMatrix::InverseOf(const VMatrix& mat)
@@ -647,6 +672,19 @@ void VMatrix::operator=(const VMatrix& mat)
 	m[3][1] = mat[3][1];
 	m[3][2] = mat[3][2];
 	m[3][3] = mat[3][3];
+}
+
+VMatrix VMatrix::operator-() const
+{
+	VMatrix	vNeg;
+
+	for (int vRow = 0; vRow < 3; vRow++)
+	{
+		for (int vCol = 0; vCol < 3; vCol++)
+			vNeg[vRow][vCol] = -m[vRow][vCol];
+	}
+
+	return vNeg;
 }
 
 /*------------------------------------------------------------------*

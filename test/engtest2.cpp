@@ -2,22 +2,29 @@
 #include <unistd.h>
 #include "engtest2.h"
 #include "VLog.h"
-#include "VWindow.h"
-#include "VInput.h"
+#include "Viper3D.h"
 //#include <GL/glx.h>
 //#include <X11/extensions/xf86vmode.h>
 
 
 int main(int argc, char *argv[])
 {
-	VInput input;
-	VWindow window;
+	Viper3D	vEngine;
 	//XWindow window;
 	VLog::SetName("Viper3D.log");
 	VLog::SetFlush();
 	VCPU::Init();
 	TestVectors();
 
+	if (!vEngine.Create(300, 300))
+	{
+		cerr << "Unable to create engine." << endl;
+		return -1;
+	}
+
+	vEngine.MainLoop();
+
+	/*
 	if (!window.CreateDevice("X"))
 	{
 		cerr << "Unable to create window device." << endl;
@@ -48,6 +55,8 @@ int main(int argc, char *argv[])
 		input.Release();
 		return 1;
 	}
+	*/
+	/*
 
 	for (;;)
 	{
@@ -60,5 +69,6 @@ int main(int argc, char *argv[])
 
 	input.Release();
 	window.Release();
+	*/
 	return 0;
 }

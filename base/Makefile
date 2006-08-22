@@ -22,6 +22,10 @@ LIBRARY = libViper3D.a
 # Source Files
 SRCS =	VInput.cpp \
 		VWindow.cpp \
+		VNode.cpp \
+		VMovable.cpp \
+		VCamera.cpp \
+		VProfiler.cpp \
 		Viper3D.cpp
 
 # Object Files

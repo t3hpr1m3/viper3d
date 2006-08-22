@@ -22,6 +22,7 @@ typedef unsigned int			uint;
 typedef unsigned long			ulong;
 typedef unsigned char			byte;
 #endif
+typedef float					scalar_t;
 
 namespace UDP
 {

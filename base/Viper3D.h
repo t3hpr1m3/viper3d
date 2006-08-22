@@ -32,6 +32,7 @@
 /* Local Headers */
 #include "VInput.h"
 #include "VWindow.h"
+#include "VCamera.h"
 
 /* Macros */
 
@@ -63,7 +64,8 @@ public:
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
-	bool				Create();
+	bool				Create(int pWidth = 800, int pHeight = 600, bool pFullScreen = false);
+	void				MainLoop();
 
 public:
 	/*==================================*
@@ -79,13 +81,16 @@ private:
 	/*==================================*
 	 *			   INTERNALS			*
 	 *==================================*/
+	VCamera*			CreateCamera(const VVector &pPos = VVector::VECTOR_ZERO,
+										const VVector &pDir = VVector::VECTOR_UNIT_Z);
 
 private:
 	/*==================================*
 	 *             VARIABLES            *
 	 *==================================*/
-	VInput				mInput;
-	VWindow				mWindow;
+	VInput				*mInput;
+	VWindow				*mWindow;
+	VCamera				*mCamera;
 };
 
 

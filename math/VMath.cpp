@@ -19,11 +19,6 @@ const float 	VMath::PI = float(4.0 * atan(1.0));
 const float 	VMath::TWO_PI = float(2.0 * PI);
 const float 	VMath::HALF_PI = float(0.5 * PI);
 
-const VMatrix 	VMath::MATRIX_IDENTITY(
-					1.0f, 0.0f, 0.0f, 0.0f,
-					0.0f, 1.0f, 0.0f, 0.0f,
-					0.0f, 0.0f, 1.0f, 0.0f,
-					0.0f, 0.0f, 0.0f, 1.0f);
 const VQuaternion VMath::QUATERNION_ZERO(0.0f, 0.0f, 0.0f, 0.0f);
 const VQuaternion VMath::QUATERNION_IDENTITY(0.0f, 0.0f, 0.0f, 1.0f);
 

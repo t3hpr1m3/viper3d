@@ -191,7 +191,7 @@ void VQuaternion::ToRotationMatrix(VMatrix& rot) const
 	float fTyz	= fTz * y;
 	float fTzz	= fTz * z;
 
-	rot = VMath::MATRIX_IDENTITY;
+	rot = VMatrix::MATRIX_IDENTITY;
 
 	rot[0][0] = 1.0f - (fTyy + fTzz);
 	rot[0][1] = fTxy - fTwz;
@@ -601,12 +601,26 @@ VQuaternion VQuaternion::operator/(const float& s) const
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-VQuaternion VQuaternion::operator*(const VVector& vec) const
+/*
+VQuaternion VQuaternion::operator*(const VVector &vec) const
 {
 	return VQuaternion(	w*vec.x + y*vec.z - z*vec.y,
 						w*vec.y + z*vec.x - x*vec.z,
 						w*vec.z + x*vec.y - y*vec.x,
 					  -(x*vec.x + y*vec.y + z*vec.z));
+}
+*/
+
+VVector VQuaternion::operator*(const VVector &pVec) const
+{
+	VVector	vUv, vUUv;
+	VVector	vQVec(x, y, z);
+	vUv = vQVec.CrossProduct(pVec);
+	vUUv = vQVec.CrossProduct(vUv);
+	vUv *= (2.0f * w);
+	vUUv *= 2.0f;
+
+	return pVec+vUv+vUUv;
 }
 
 /*------------------------------------------------------------------*

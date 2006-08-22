@@ -1,11 +1,3 @@
-/**
- *	@class		UDP::VInput
- *
- *	@brief		Helper class for loading the specific Input System
- *	@author		Josh Williams
- *	@version	0.1.0
- *	@date		2004-Sep-01
- */
 /*============================================================================*
  *                                                                            *
  *  This file is part of the Viper3D Game Engine.                             *
@@ -32,6 +24,14 @@ namespace UDP
 typedef void (*DLL_INPCREATE)(VInputSystem **pInput);
 typedef void (*DLL_INPDESTROY)(VInputSystem *pInput);
 
+/**
+ *	@class		VInput
+ *
+ *	@brief		Helper class for loading the specific Input System
+ *	@author		Josh Williams
+ *	@version	0.1.0
+ *	@date		2004-Sep-01
+ */
 class VInput
 {
 public:
