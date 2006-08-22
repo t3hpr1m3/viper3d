@@ -21,7 +21,8 @@ LIBRARY = libViper3D.a
 
 # Source Files
 SRCS =	VInput.cpp \
-		VWindow.cpp
+		VWindow.cpp \
+		Viper3D.cpp
 
 # Object Files
 OBJS = $(SRCS:.cpp=.o)
