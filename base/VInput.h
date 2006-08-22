@@ -21,55 +21,58 @@
 #if !defined(__VINPUT_H_INCLUDED__)
 #define __VINPUT_H_INCLUDED__
 
+/* System Headers */
+
+/* Local Headers */
 #include "VDynamicLib.h"
 #include "VInputSystem.h"
 
 namespace UDP
 {
-	typedef void (*DLL_INPCREATE)(VInputSystem **ppInput);
-	typedef void (*DLL_INPDESTROY)(VInputSystem *ppInput);
+typedef void (*DLL_INPCREATE)(VInputSystem **pInput);
+typedef void (*DLL_INPDESTROY)(VInputSystem *pInput);
 
-	class VInput
-	{
-	public:
-		/*==================================*
-		 *	   CONSTRUCTION/DESTRUCTION		*
-		 *==================================*/
-		VInput(void);
-		virtual ~VInput(void);
+class VInput
+{
+public:
+	/*==================================*
+	 *	   CONSTRUCTION/DESTRUCTION		*
+	 *==================================*/
+	VInput(void);
+	virtual ~VInput(void);
 
-		/*==================================*
-		 *			  ATTRIBUTES			*
-		 *==================================*/
-	
-		/*==================================*
-		 *			  OPERATIONS			*
-		 *==================================*/
-		bool			CreateDevice(char *pcAPI);
-		void			Release(void);
-		VInputSystem*	GetDevice(void);
+	/*==================================*
+	 *			  ATTRIBUTES			*
+	 *==================================*/
 
-	protected:
-		/*==================================*
-		 *             CALLBACKS			*
-		 *==================================*/
+	/*==================================*
+	 *			  OPERATIONS			*
+	 *==================================*/
+	bool			CreateDevice(char *pAPI);
+	void			Release(void);
+	VInputSystem*	GetDevice(void);
 
-	private:
-		/*==================================*
-		 *             INTERNALS            *
-		 *==================================*/
+protected:
+	/*==================================*
+	 *             CALLBACKS			*
+	 *==================================*/
 
-	
-	private:
-		/*==================================*
-		 *             VARIABLES            *
-		 *==================================*/
-		VDynamicLib		m_inputLib;		/**< Dynamic library object	*/			
-		VInputSystem	*m_pDevice;		/**< Actual InputSystem pointer	*/
-		DLL_INPCREATE	m_pfCreate;		/**< Pointer to creation function */
-		DLL_INPDESTROY	m_pfDestroy;	/**< Pointer to deletion function */
+private:
+	/*==================================*
+	 *             INTERNALS            *
+	 *==================================*/
 
-	};
+
+private:
+	/*==================================*
+	 *             VARIABLES            *
+	 *==================================*/
+	VDynamicLib		mInputLib;		/**< Dynamic library object	*/			
+	VInputSystem	*mDevice;		/**< Actual InputSystem pointer	*/
+	DLL_INPCREATE	mCreate;		/**< Pointer to creation function */
+	DLL_INPDESTROY	mDestroy;		/**< Pointer to deletion function */
+
+};
 
 } // End Namespace
 

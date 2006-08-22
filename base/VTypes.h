@@ -149,8 +149,8 @@ enum VKeyCode
 class VKeyEvent
 {
 public:
-	int			action;
-	VKeyCode	code;
+	int			mAction;
+	VKeyCode	mCode;
 };
 
 } // End Namespace

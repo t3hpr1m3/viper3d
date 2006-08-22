@@ -5,11 +5,11 @@
  *	Copyright (C) 2004 UDP Games   All Rights Reserved.                       *
  *                                                                            *
  *============================================================================*/
+#include "VWindow.h"
 
 /* System Headers */
 
 /* Local Headers */
-#include "VWindow.h"
 #include "VLog.h"
 
 namespace UDP
@@ -22,12 +22,12 @@ static char __CLASS__[] = "[   VWindow    ]";
  ********************************************************************/
 VWindow::VWindow(void)
 {
-	m_pDevice = NULL;
+	mDevice = NULL;
 }
 
 VWindow::~VWindow(void)
 {
-	if (m_pDevice != NULL)
+	if (mDevice != NULL)
 		Release();
 }
 
@@ -53,7 +53,7 @@ VWindow::~VWindow(void)
  *------------------------------------------------------------------*/
 VWindowSystem* VWindow::GetDevice(void)
 {
-	return m_pDevice;
+	return mDevice;
 }
 
 /********************************************************************
@@ -67,7 +67,7 @@ VWindowSystem* VWindow::GetDevice(void)
  *	@author		Josh Williams
  *	@date		01-Sep-2004
  *
- *	@param		pcAPI	Desired window system (X, Win32, etc)
+ *	@param		pAPI	Desired window system (X, Win32, etc)
  *
  *	@returns	Success/failure
  *
@@ -82,13 +82,13 @@ VWindowSystem* VWindow::GetDevice(void)
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-bool VWindow::CreateDevice(char *pcAPI)
+bool VWindow::CreateDevice(char *pAPI)
 {
-	if (strcmp(pcAPI, "X") == 0)
+	if (strcmp(pAPI, "X") == 0)
 	{
 		/* try to load the X window library */
 		VTRACE(_CL("Loading X window system library\n"));
-		if (!m_windowLib.Load("./libs", "VXWindow"))
+		if (!mWindowLib.Load("./libs", "VXWindow"))
 		{
 			VTRACE(_CL("Unable to load window library\n"));
 			return false;
@@ -96,24 +96,24 @@ bool VWindow::CreateDevice(char *pcAPI)
 		VTRACE(_CL("Library loaded successfully\n"));
 
 		/* obtain pointer to the creation function */
-		m_pfCreate = (DLL_WINCREATE)m_windowLib.GetSymbol("Construct");
-		if (m_pfCreate == NULL)
+		mCreate = (DLL_WINCREATE)mWindowLib.GetSymbol("Construct");
+		if (mCreate == NULL)
 		{
 			VTRACE(_CL("Unable to locate constructor.\n"));
 			return false;
 		}
 
 		/* obtain pointer to the deletion function */
-		m_pfDestroy = (DLL_WINDESTROY)m_windowLib.GetSymbol("Destruct");
-		if (m_pfDestroy == NULL)
+		mDestroy = (DLL_WINDESTROY)mWindowLib.GetSymbol("Destruct");
+		if (mDestroy == NULL)
 		{
 			VTRACE(_CL("Unable to locate cleanup function.\n"));
 			return false;
 		}
 
 		/* try and create the WindowSystem */
-		m_pfCreate(&m_pDevice);
-		if (m_pDevice == NULL)
+		mCreate(&mDevice);
+		if (mDevice == NULL)
 		{
 			VTRACE(_CL("Unable to create window device.\n"));
 			return false;
@@ -147,8 +147,8 @@ bool VWindow::CreateDevice(char *pcAPI)
 void VWindow::Release(void)
 {
 	VTRACE(_CL("Releasing device...\n"));
-	m_pfDestroy(m_pDevice);
-	m_pDevice = NULL;
+	mDestroy(mDevice);
+	mDevice = NULL;
 }
 /********************************************************************
  *                         C A L L B A C K S                        *

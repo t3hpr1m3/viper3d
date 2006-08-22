@@ -21,8 +21,11 @@
 #if !defined(__VLOG_H_INCLUDED__)
 #define __VLOG_H_INCLUDED__
 
+/* System Headers */
 #include <cstdarg>
 #include <fstream>
+
+/* Local Headers */
 
 using std::ofstream;
 using std::ios_base;
@@ -53,10 +56,10 @@ public:
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
-	static void		SetName(const char *pcName);
-	static void		SetFlush(bool bFlush = true);
+	static void		SetName(const char *pName);
+	static void		SetFlush(bool pFlush = true);
 	static VLog&	Get();
-	void			Write(const char *pcText, ...) const;
+	void			Write(const char *pText, ...) const;
 protected:
 	/*==================================*
 	 *             CALLBACKS			*
@@ -72,10 +75,10 @@ private:
 	/*==================================*
 	 *             VARIABLES            *
 	 *==================================*/
-	static char		*m_logName;
-	static ofstream	m_logFile;
+	static char		*mLogName;
+	static ofstream	mLogFile;
 
-	static bool		m_bFlush;
+	static bool		mFlush;
 };
 
 } // End Namespace

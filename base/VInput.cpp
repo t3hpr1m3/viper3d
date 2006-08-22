@@ -5,11 +5,11 @@
  *	Copyright (C) 2004 UDP Games   All Rights Reserved.                       *
  *                                                                            *
  *============================================================================*/
+#include "VInput.h"
 
 /* System Headers */
 
 /* Local Headers */
-#include "VInput.h"
 #include "VLog.h"
 
 namespace UDP
@@ -22,12 +22,12 @@ static char __CLASS__[] = "[    VInput    ]";
  ********************************************************************/
 VInput::VInput(void)
 {
-	m_pDevice = NULL;
+	mDevice = NULL;
 }
 
 VInput::~VInput(void)
 {
-	if (m_pDevice != NULL)
+	if (mDevice != NULL)
 		Release();
 }
 
@@ -53,7 +53,7 @@ VInput::~VInput(void)
  *------------------------------------------------------------------*/
 VInputSystem* VInput::GetDevice(void)
 {
-	return m_pDevice;
+	return mDevice;
 }
 /********************************************************************
  *                        O P E R A T I O N S                       *
@@ -66,7 +66,7 @@ VInputSystem* VInput::GetDevice(void)
  *	@author		Josh Williams
  *	@date		01-Sep-2004
  *
- *	@param		pcAPI	Desired input system (X, DirectInput, etc)
+ *	@param		pAPI	Desired input system (X, DirectInput, etc)
  *
  *	@returns	Success/failure
  *
@@ -81,13 +81,13 @@ VInputSystem* VInput::GetDevice(void)
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-bool VInput::CreateDevice(char *pcAPI)
+bool VInput::CreateDevice(char *pAPI)
 {
-	if (strcmp(pcAPI, "X") == 0)
+	if (strcmp(pAPI, "X") == 0)
 	{
 		/* try to load the X input library */
 		VTRACE(_CL("Loading X input system\n"));
-		if (!m_inputLib.Load("./libs", "VXInput"))
+		if (!mInputLib.Load("./libs", "VXInput"))
 		{
 			VTRACE(_CL("Unable to load input library\n"));
 			return false;
@@ -95,24 +95,24 @@ bool VInput::CreateDevice(char *pcAPI)
 		VTRACE(_CL("Library loaded successfully\n"));
 
 		/* obtain pointer to the creation function */
-		m_pfCreate = (DLL_INPCREATE)m_inputLib.GetSymbol("Construct");
-		if (m_pfCreate == NULL)
+		mCreate = (DLL_INPCREATE)mInputLib.GetSymbol("Construct");
+		if (mCreate == NULL)
 		{
 			VTRACE(_CL("Unable to locate constructor.\n"));
 			return false;
 		}
 
 		/* obtain pointer to the deletion function */
-		m_pfDestroy = (DLL_INPDESTROY)m_inputLib.GetSymbol("Destruct");
-		if (m_pfDestroy == NULL)
+		mDestroy = (DLL_INPDESTROY)mInputLib.GetSymbol("Destruct");
+		if (mDestroy == NULL)
 		{
 			VTRACE(_CL("Unable to locate destructor.\n"));
 			return false;
 		}
 
 		/* try to create the actual input device */
-		m_pfCreate(&m_pDevice);
-		if (m_pDevice == NULL)
+		mCreate(&mDevice);
+		if (mDevice == NULL)
 		{
 			VTRACE(_CL("Unable to create input device.\n"));
 			return false;
@@ -146,8 +146,8 @@ bool VInput::CreateDevice(char *pcAPI)
 void VInput::Release(void)
 {
 	VTRACE(_CL("Releasing device...\n"));
-	m_pfDestroy(m_pDevice);
-	m_pDevice = NULL;
+	mDestroy(mDevice);
+	mDevice = NULL;
 }
 /********************************************************************
  *                         C A L L B A C K S                        *

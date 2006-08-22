@@ -21,6 +21,10 @@
 #if !defined(__VCPU_H_INCLUDED__)
 #define __VCPU_H_INCLUDED__
 
+/* System Headers */
+
+/* Local Headers */
+
 namespace UDP
 {
 
@@ -56,24 +60,24 @@ private:
 	static void		GetCPUVendor();
 	static void		GetBaseFeatures();
 	static void		GetExtFeatures();
-	static void		GetIntelInfo(int *n);
-	static void		GetAMDInfo(int *n);
+	static void		GetIntelInfo(int *Pn);
+	static void		GetAMDInfo(int *Pn);
 
 private:
 	/*==================================*
 	 *             VARIABLES            *
 	 *==================================*/
-	static bool		m_bSSE;
-	static bool		m_bSSE2;
-	static bool		m_b3DNOW;
-	static bool		m_bMMX;
-	static bool		m_bEXT;
-	static bool		m_bMMXEX;
-	static bool		m_b3DNOWEX;
-	static char		m_Vendor[13];
-	static char		m_Name[48];
+	static bool		mSSE;
+	static bool		mSSE2;
+	static bool		m3DNOW;
+	static bool		mMMX;
+	static bool		mEXT;
+	static bool		mMMXEX;
+	static bool		m3DNOWEX;
+	static char		mVendor[13];
+	static char		mName[48];
 public:
-	static bool		m_bOSSSE;
+	static bool		mOSSSE;
 };
 
 } // End Namespace

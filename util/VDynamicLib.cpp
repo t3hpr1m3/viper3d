@@ -5,12 +5,12 @@
  *	Copyright (C) 2004 UDP Games   All Rights Reserved.						  *
  *																			  *
  *============================================================================*/
+#include "VDynamicLib.h"
 
 /* System Headers */
 
 /* Local Headers */
 #include "VString.h"
-#include "VDynamicLib.h"
 #include "VLog.h"
 
 namespace UDP
@@ -23,15 +23,15 @@ static char __CLASS__[] = "[ VDynamicLib  ]";
  ********************************************************************/
 VDynamicLib::VDynamicLib(void)
 {
-	m_hInst = NULL;
-	m_Name = "";
-	m_strError = "";
+	mInst = NULL;
+	mName = "";
+	mError = "";
 
 }
 
 VDynamicLib::~VDynamicLib(void)
 {
-	if (m_hInst != NULL)
+	if (mInst != NULL)
 		UnLoad();
 }
 
@@ -62,17 +62,17 @@ VDynamicLib::~VDynamicLib(void)
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-bool VDynamicLib::Load(const VString& path, const VString& name)
+bool VDynamicLib::Load(const VString& pPath, const VString& pName)
 {
-	BuildLibName(path, name);
+	BuildLibName(pPath, pName);
 
-	VTRACE(_CL("Loading %s\n"), m_Name.C_Str());
+	VTRACE(_CL("Loading %s\n"), mName.C_Str());
 
-	m_hInst = (DYNLIB_HANDLE)DYNLIB_LOAD( m_Name.C_Str() );
-	if (m_hInst == NULL)
+	mInst = (DYNLIB_HANDLE)DYNLIB_LOAD( mName.C_Str() );
+	if (mInst == NULL)
 	{
 		VTRACE(_CL("Unable to load library.\n"));
-		m_strError = DYNLIB_ERROR();
+		mError = DYNLIB_ERROR();
 		VTRACE(_CL("Error: %s\n"), Error());
 		return false;
 	}
@@ -98,10 +98,10 @@ bool VDynamicLib::Load(const VString& path, const VString& name)
  *------------------------------------------------------------------*/
 void VDynamicLib::UnLoad()
 {
-	if (m_hInst != NULL)
-		DYNLIB_UNLOAD( m_hInst );
+	if (mInst != NULL)
+		DYNLIB_UNLOAD( mInst );
 
-	m_hInst = NULL;
+	mInst = NULL;
 }
 
 /*------------------------------------------------------------------*
@@ -122,15 +122,15 @@ void VDynamicLib::UnLoad()
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-void* VDynamicLib::GetSymbol(const VString& strName) const
+void* VDynamicLib::GetSymbol(const VString& pName) const
 {
-	if (m_hInst == NULL)
+	if (mInst == NULL)
 	{
 		VTRACE(_CL("GetSymbol() called with no library loaded\n"));
 		return NULL;
 	}
 
-	return DYNLIB_GETSYM( m_hInst, strName.C_Str());
+	return DYNLIB_GETSYM( mInst, pName.C_Str());
 }
 
 /*------------------------------------------------------------------*
@@ -151,7 +151,7 @@ void* VDynamicLib::GetSymbol(const VString& strName) const
  *------------------------------------------------------------------*/
 const char* VDynamicLib::Error(void) const
 {
-	return m_strError.C_Str();
+	return mError.C_Str();
 }
 
 /********************************************************************
@@ -181,18 +181,18 @@ const char* VDynamicLib::Error(void) const
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-void VDynamicLib::BuildLibName(const VString& path, const VString& name)
+void VDynamicLib::BuildLibName(const VString& pPath, const VString& pName)
 {
-	m_Name = path;
+	mName = pPath;
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
-	if (m_Name[m_Name.Length()-1] != '\\')
-		m_Name += "\\";
-	m_Name += name + ".dll";
+	if (mName[mName.Length()-1] != '\\')
+		mName += "\\";
+	mName += pName + ".dll";
 #elif VIPER_PLATFORM == PLATFORM_LINUX
-	if (m_Name[m_Name.Length()-1] != '/')
-		m_Name += "/";
-	m_Name += "lib";
-	m_Name += name + ".so";
+	if (mName[mName.Length()-1] != '/')
+		mName += "/";
+	mName += "lib";
+	mName += pName + ".so";
 #endif
 }
 

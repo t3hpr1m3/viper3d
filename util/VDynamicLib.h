@@ -23,6 +23,9 @@
 #if !defined(__VDYNAMICLIB_H_INCLUDED__)
 #define __VDYNAMICLIB_H_INCLUDED__
 
+/* System Headers */
+
+/* Local Headers */
 #include "VGlobals.h"
 #include "VString.h"
 
@@ -62,9 +65,9 @@ public:
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
-	bool			Load(const VString &path, const VString& name);
+	bool			Load(const VString &pPath, const VString& pName);
 	void			UnLoad(void);
-	void*			GetSymbol(const VString& strName) const;
+	void*			GetSymbol(const VString& pName) const;
 	const char*		Error(void) const;
 
 protected:
@@ -76,16 +79,16 @@ private:
 	/*==================================*
 	 *             INTERNALS            *
 	 *==================================*/
-	void			BuildLibName(const VString &path, 
-											const VString& strName);
+	void			BuildLibName(const VString &pPath, 
+											const VString& pName);
 
 private:
 	/*==================================*
 	 *             VARIABLES            *
 	 *==================================*/
-	DYNLIB_HANDLE	m_hInst;		/**< OS specific library handle */
-	VString			m_Name;			/**< full name of the library to load */
-	VString			m_strError;		/**< Last error encountered */
+	DYNLIB_HANDLE	mInst;		/**< OS specific library handle */
+	VString			mName;		/**< full name of the library to load */
+	VString			mError;		/**< Last error encountered */
 };
 
 } // End Namespace

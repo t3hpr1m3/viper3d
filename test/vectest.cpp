@@ -32,7 +32,7 @@ void TestLength(VVector& vec, unsigned int nIters)
 	cout << "                  Length()" << endl;
 	cout << "===========================================" << endl;
 	/* first, test without SSE */
-	VCPU::m_bOSSSE = false;
+	VCPU::mOSSSE = false;
 	ftime(&tp_start);
 	for (unsigned int i = 0; i < nIters; i++)
 	{
@@ -45,7 +45,7 @@ void TestLength(VVector& vec, unsigned int nIters)
 	cout << "      length: " << length << endl;
 
 	/* now, try with SSE */
-	VCPU::m_bOSSSE = true;
+	VCPU::mOSSSE = true;
 	ftime(&tp_start);
 	for (unsigned int i = 0; i < nIters; i++)
 	{
@@ -70,7 +70,7 @@ void TestNormalize(VVector& vec, unsigned int nIters)
 	cout << "                Normalize()" << endl;
 	cout << "===========================================" << endl;
 	/* first, test without SSE */
-	VCPU::m_bOSSSE = false;
+	VCPU::mOSSSE = false;
 	ftime(&tp_start);
 	for (unsigned int i = 0; i < nIters; i++)
 	{
@@ -84,7 +84,7 @@ void TestNormalize(VVector& vec, unsigned int nIters)
 	cout << "        vTmp: " << vTmp << endl;
 
 	/* now, try with SSE */
-	VCPU::m_bOSSSE = true;
+	VCPU::mOSSSE = true;
 	ftime(&tp_start);
 	for (unsigned int i = 0; i < nIters; i++)
 	{
@@ -110,7 +110,7 @@ void TestCross(VVector& vec1, VVector& vec2, unsigned int nIters)
 	cout << "                  Cross()" << endl;
 	cout << "===========================================" << endl;
 	/* first, test without SSE */
-	VCPU::m_bOSSSE = false;
+	VCPU::mOSSSE = false;
 	ftime(&tp_start);
 	for (unsigned int i = 0; i < nIters; i++)
 	{
@@ -123,7 +123,7 @@ void TestCross(VVector& vec1, VVector& vec2, unsigned int nIters)
 	cout << "        vTmp: " << vTmp << endl;
 
 	/* now, try with SSE */
-	VCPU::m_bOSSSE = true;
+	VCPU::mOSSSE = true;
 	ftime(&tp_start);
 	for (unsigned int i = 0; i < nIters; i++)
 	{

@@ -21,157 +21,160 @@
 #if !defined(__VXWINDOWSYSTEM_H_INCLUDED__)
 #define __VXWINDOWSYSTEM_H_INCLUDED__
 
+/* System Headers */
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include <X11/extensions/xf86vmode.h>
 #include <X11/keysym.h>
-#include "VWindowSystem.h"
 #include <map>
 #include <fstream>
+
+/* Local Headers */
+#include "VWindowSystem.h"
 #include "VString.h"
 
 using std::map;
 
 namespace UDP
 {
-	class VXFont : public VFont
-	{
-	public:
-		VXFont() {};
-		virtual ~VXFont() {};
+class VXFont : public VFont
+{
+public:
+	VXFont() {};
+	virtual ~VXFont() {};
 
-		VString	m_strFont;
-		uint	m_pitch;
+	VString	mFont;
+	uint	mPitch;
 
-		GLuint	m_base;
-		GLuint	m_first;
-		GLuint	m_count;
-	};
+	GLuint	mBase;
+	GLuint	mFirst;
+	GLuint	mCount;
+};
 
-	typedef struct
-	{
-		Display					*dpy;
-		int						screen;
-		Window					win;
-		GLXContext				ctx;
-		XSetWindowAttributes	attr;
-		XF86VidModeModeInfo		deskMode;
-		int						x;
-		int						y;
-		uint					depth;
-	} GLWindow;
+typedef struct
+{
+	Display					*mDpy;
+	int						mScreen;
+	Window					mWin;
+	GLXContext				mCtx;
+	XSetWindowAttributes	mAttr;
+	XF86VidModeModeInfo		mDeskMode;
+	int						mX;
+	int						mY;
+	uint					mDepth;
+} GLWindow;
 
-	typedef map<KeySym, VKeyCode> _KeyMap;	
+typedef map<KeySym, VKeyCode> _KeyMap;	
 
-	class VXWindowSystem : public VWindowSystem
-	{
-	public:
-		/*==================================*
-		 *	   CONSTRUCTION/DESTRUCTION		*
-		 *==================================*/
-		VXWindowSystem(void);
-		virtual ~VXWindowSystem(void);
+class VXWindowSystem : public VWindowSystem
+{
+public:
+	/*==================================*
+	 *	   CONSTRUCTION/DESTRUCTION		*
+	 *==================================*/
+	VXWindowSystem(void);
+	virtual ~VXWindowSystem(void);
 
-		/*==================================*
-		 *			  ATTRIBUTES			*
-		 *==================================*/
+	/*==================================*
+	 *			  ATTRIBUTES			*
+	 *==================================*/
 
-		/*==================================*
-		 *			  OPERATIONS			*
-		 *==================================*/
-		/**
-		 *	@brief		Initializes the window system.
-		 *	@author		Josh Williams
-		 *	@date		02-Sep-2004
-		 *
-		 *	@returns	Success/failure
-		 */
-		bool			Initialize(void);
-		/**
-		 *	@brief		Creates the actual window (OS specific).
-		 *	@author		Josh Williams
-		 *	@date		22-Sep-2003
-		 *
-		 *	@param		nWidth
-		 *	@param		nHeight		Dimensions for the window
-		 *	@param		bFullScreen	Whether or not this should be a fullscreen
-		 *				window.
-		 *
-		 *	@returns	(bool) Whether or not we could create the actual window.
-		 */
-		bool			CreateWindow(const uint nWidth, const uint nHeight,
-										bool bFullScreen = false);
-		/**
-		 *	@brief		Closes the currently active window.
-		 *	@author		Josh Williams
-		 *	@date		02-Sep-2004
-		 *
-		 *	@returns	void
-		 */
-		void			DestroyWindow(void);
-		/**
-		 *	@brief		Adjusts the size (resolution) of the active window.
-		 *	@author		Josh Williams
-		 *	@date		02-Sep-2004
-		 *
-		 *	@param		nWidth
-		 *	@param		nHeight		Dimensions for the window
-		 *
-		 *	@returns	(bool) Whether or not we could create the new window.
-		 */
-		bool			Resize(const uint nWidth, const uint nHeight);
-		/**
-		 *	@brief		Switches between windowed and fullscreen mode.
-		 *	@author		Josh Williams
-		 *	@date		02-Sep-2004
-		 *
-		 *	@param		bFullScreen	Screen mode desired.
-		 *
-		 *	@returns	(bool) Whether or not we could create the new window.
-		 */
-		bool			FullScreen(bool bFullScreen);
-		/**
-		 *	@brief		Sets the caption for the window.
-		 *	@author		Josh Williams
-		 *	@date		22-Sep-2003
-		 *
-		 *	@param		pcCaption	Text string to be displayed for this window
-		 *
-		 *	@returns	void
-		 */
-		void			SetCaption(const char *pcCaption) const;
-		void			SwapBuffers(void) const;
-		bool			CaptureInput(ulong ulFlags) const;
-		void			Update(void);
-		VKeyEvent*		GetEvent(void);
+	/*==================================*
+	 *			  OPERATIONS			*
+	 *==================================*/
+	/**
+	 *	@brief		Initializes the window system.
+	 *	@author		Josh Williams
+	 *	@date		02-Sep-2004
+	 *
+	 *	@returns	Success/failure
+	 */
+	bool			Initialize(void);
+	/**
+	 *	@brief		Creates the actual window (OS specific).
+	 *	@author		Josh Williams
+	 *	@date		22-Sep-2003
+	 *
+	 *	@param		pWidth
+	 *	@param		pHeight		Dimensions for the window
+	 *	@param		pFullScreen	Whether or not this should be a fullscreen
+	 *							window.
+	 *
+	 *	@returns	(bool) Whether or not we could create the actual window.
+	 */
+	bool			CreateWindow(const uint pWidth, const uint pHeight,
+									bool pFullScreen = false);
+	/**
+	 *	@brief		Closes the currently active window.
+	 *	@author		Josh Williams
+	 *	@date		02-Sep-2004
+	 *
+	 *	@returns	void
+	 */
+	void			DestroyWindow(void);
+	/**
+	 *	@brief		Adjusts the size (resolution) of the active window.
+	 *	@author		Josh Williams
+	 *	@date		02-Sep-2004
+	 *
+	 *	@param		pWidth
+	 *	@param		pHeight		Dimensions for the window
+	 *
+	 *	@returns	(bool) Whether or not we could create the new window.
+	 */
+	bool			Resize(const uint pWidth, const uint pHeight);
+	/**
+	 *	@brief		Switches between windowed and fullscreen mode.
+	 *	@author		Josh Williams
+	 *	@date		02-Sep-2004
+	 *
+	 *	@param		pFullScreen	Screen mode desired.
+	 *
+	 *	@returns	(bool) Whether or not we could create the new window.
+	 */
+	bool			FullScreen(bool pFullScreen);
+	/**
+	 *	@brief		Sets the caption for the window.
+	 *	@author		Josh Williams
+	 *	@date		22-Sep-2003
+	 *
+	 *	@param		pCaption	Text string to be displayed for this window
+	 *
+	 *	@returns	void
+	 */
+	void			SetCaption(const char *pCaption) const;
+	void			SwapBuffers(void) const;
+	bool			CaptureInput(ulong pFlags) const;
+	void			Update(void);
+	VKeyEvent*		GetEvent(void);
 
-	protected:
-		/*==================================*
-		 *             CALLBACKS			*
-		 *==================================*/
+protected:
+	/*==================================*
+	 *             CALLBACKS			*
+	 *==================================*/
 
-	private:
-		/*==================================*
-		 *             INTERNALS            *
-		 *==================================*/
-	protected:
-		void			WriteLog(const char *pcText, ...);
-		void			LoadKeyMap(void);
+private:
+	/*==================================*
+	 *             INTERNALS            *
+	 *==================================*/
+protected:
+	void			WriteLog(const char *pText, ...);
+	void			LoadKeyMap(void);
 
 
-	private:
-		/*==================================*
-		 *             VARIABLES            *
-		 *==================================*/
-		_KeyMap				m_KeyMap;
-		bool				m_bWinCreated;
-		bool				m_bInitialized;
-		GLWindow			m_Win;
-		std::ofstream		m_LogFile;
-		XF86VidModeModeInfo	**m_Modes;
-		int					m_nNumModes;
-		XVisualInfo 		*m_vInfo;
-	};
+private:
+	/*==================================*
+	 *             VARIABLES            *
+	 *==================================*/
+	_KeyMap				mKeyMap;
+	bool				mWinCreated;
+	bool				mInitialized;
+	GLWindow			mWin;
+	std::ofstream		mLogFile;
+	XF86VidModeModeInfo	**mModes;
+	int					mNumModes;
+	XVisualInfo 		*mVInfo;
+};
 
 }
 

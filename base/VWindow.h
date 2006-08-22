@@ -21,13 +21,16 @@
 #if !defined(__VWINDOW_H_INCLUDED__)
 #define __VWINDOW_H_INCLUDED__
 
+/* System Headers */
+
+/* Local Headers */
 #include "VDynamicLib.h"
 #include "VWindowSystem.h"
 
 namespace UDP
 {
-	typedef void (*DLL_WINCREATE)(VWindowSystem **ppWindow);
-	typedef void (*DLL_WINDESTROY)(VWindowSystem *ppWindow);
+	typedef void (*DLL_WINCREATE)(VWindowSystem **pWindow);
+	typedef void (*DLL_WINDESTROY)(VWindowSystem *pWindow);
 
 	class VWindow
 	{
@@ -45,7 +48,7 @@ namespace UDP
 		/*==================================*
 		 *			  OPERATIONS			*
 		 *==================================*/
-		bool CreateDevice(char *pcAPI);
+		bool CreateDevice(char *pAPI);
 		void Release(void);
 		VWindowSystem*	GetDevice(void);
 
@@ -64,10 +67,10 @@ namespace UDP
 		/*==================================*
 		 *             VARIABLES            *
 		 *==================================*/
-		VDynamicLib			m_windowLib;
-		VWindowSystem		*m_pDevice;
-		DLL_WINCREATE		m_pfCreate;
-		DLL_WINDESTROY		m_pfDestroy;
+		VDynamicLib			mWindowLib;
+		VWindowSystem		*mDevice;
+		DLL_WINCREATE		mCreate;
+		DLL_WINDESTROY		mDestroy;
 
 	};
 

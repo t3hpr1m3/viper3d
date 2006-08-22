@@ -23,88 +23,92 @@
 #if !defined(__VINPUTSYSTEM_H_INCLUDED__)
 #define __VINPUTSYSTEM_H_INCLUDED__
 
+/* System Headers */
 #include <map>
+
+/* Local Headers */
 #include "VGlobals.h"
 #include "VWindowSystem.h"
 #include "VTypes.h"
 
 namespace UDP
 {
-	typedef std::map<VKeyCode, bool> _KeyStates;
-	
-	class VMouseState
+
+typedef std::map<VKeyCode, bool> _KeyStates;
+
+class VMouseState
+{
+public:
+	long mXabs, mYabs, mZabs;
+	long mXrel, mYrel, mZrel;
+
+	long mButtons;
+	inline long IsButtonDown(unsigned char pButton) const
 	{
-	public:
-		long Xabs, Yabs, Zabs;
-		long Xrel, Yrel, Zrel;
+		return mButtons & (1 << pButton);
+	}
+};
 
-		long Buttons;
-		inline long isButtonDown(unsigned char button) const
-		{
-			return Buttons & (1 << button);
-		}
-	};
+class VInputSystem
+{
+public:
+	/*==================================*
+	 *	   CONSTRUCTION/DESTRUCTION		*
+	 *==================================*/
+	VInputSystem() {};
+	virtual ~VInputSystem() {};
 
-	class VInputSystem
-	{
-	public:
-		/*==================================*
-		 *	   CONSTRUCTION/DESTRUCTION		*
-		 *==================================*/
-		VInputSystem() {};
-		virtual ~VInputSystem() {};
+	/*==================================*
+	 *			  ATTRIBUTES			*
+	 *==================================*/
+	virtual bool	IsKeyDown(VKeyCode pKc) = 0;
 
-		/*==================================*
-		 *			  ATTRIBUTES			*
-		 *==================================*/
-		virtual bool	IsKeyDown(VKeyCode kc) = 0;
+	/*==================================*
+	 *			  OPERATIONS			*
+	 *==================================*/
+	/**
+	 *	@brief		Initializes the input system with the underlying
+	 *				OS window.
+	 *	@author		Josh Williams
+	 *	@date		24-Sep-2003
+	 *
+	 *	@param		pWins	Handle/pointer to the OS window for
+	 *						processing events
+	 *
+	 *	@returns	bool
+	 */
+	virtual bool	Initialize(VWindowSystem *pWins) = 0;
+	/**
+	 *	@brief		Causes a check of the keyboard/mouse state
+	 *	@author		Josh Williams
+	 *	@date		20-Sep-2003
+	 *
+	 *	@returns	void
+	 */
+	virtual void 	Update() = 0;
 
-		/*==================================*
-		 *			  OPERATIONS			*
-		 *==================================*/
-		/**
-		 *	@brief		Initializes the input system with the underlying
-		 *				OS window.
-		 *	@author		Josh Williams
-		 *	@date		24-Sep-2003
-		 *
-		 *	@param		pWins	Handle/pointer to the OS window for
-		 *						processing events
-		 *
-		 *	@returns	bool
-		 */
-		virtual bool	Initialize(VWindowSystem *pWins) = 0;
-		/**
-		 *	@brief		Causes a check of the keyboard/mouse state
-		 *	@author		Josh Williams
-		 *	@date		20-Sep-2003
-		 *
-		 *	@returns	void
-		 */
-		virtual void 	Update() = 0;
+protected:
+	/*==================================*
+	 *             CALLBACKS			*
+	 *==================================*/
 
-	protected:
-		/*==================================*
-		 *             CALLBACKS			*
-		 *==================================*/
+private:
+	/*==================================*
+	 *             INTERNALS            *
+	 *==================================*/
+protected:
 
-	private:
-		/*==================================*
-		 *             INTERNALS            *
-		 *==================================*/
-	protected:
-	
-	private:
-		/*==================================*
-		 *             VARIABLES            *
-		 *==================================*/
-	protected:
-		VMouseState		m_MouseState;
-		_KeyStates		m_KeyStates;
-		static bool		m_bKeysInitialized;
-		int				m_MouseCenterX;
-		int				m_MouseCenterY;
-	};
+private:
+	/*==================================*
+	 *             VARIABLES            *
+	 *==================================*/
+protected:
+	VMouseState		mMouseState;
+	_KeyStates		mKeyStates;
+	static bool		mKeysInitialized;
+	int				mMouseCenterX;
+	int				mMouseCenterY;
+};
 
 } // End Namespace
 

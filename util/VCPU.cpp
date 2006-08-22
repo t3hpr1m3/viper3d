@@ -5,27 +5,27 @@
  *	Copyright (C) 2004 UDP Games   All Rights Reserved.                       *
  *                                                                            *
  *============================================================================*/
+#include "VCPU.h"
 
 /* System Headers */
 #include <cstring>
 
 /* Local Headers */
 #include "VGlobals.h"
-#include "VCPU.h"
 #include "VLog.h"
 
 namespace UDP
 {
-bool	VCPU::m_bSSE = false;
-bool	VCPU::m_bOSSSE = false;
-bool	VCPU::m_bSSE2 = false;
-bool	VCPU::m_b3DNOW = false;
-bool	VCPU::m_bMMX = false;
-bool	VCPU::m_bEXT = false;
-bool	VCPU::m_bMMXEX = false;
-bool	VCPU::m_b3DNOWEX = false;
-char	VCPU::m_Vendor[13];
-char	VCPU::m_Name[48];
+bool	VCPU::mSSE = false;
+bool	VCPU::mOSSSE = false;
+bool	VCPU::mSSE2 = false;
+bool	VCPU::m3DNOW = false;
+bool	VCPU::mMMX = false;
+bool	VCPU::mEXT = false;
+bool	VCPU::mMMXEX = false;
+bool	VCPU::m3DNOWEX = false;
+char	VCPU::mVendor[13];
+char	VCPU::mName[48];
 
 static char __CLASS__[] = "[     VCPU     ]";
 
@@ -34,7 +34,7 @@ static char __CLASS__[] = "[     VCPU     ]";
 static void sigill_handler(int signal, struct sigcontext sc)
 {
 	sc.eip += 3;
-	UDP::VCPU::m_bOSSSE = false;
+	UDP::VCPU::mOSSSE = false;
 }
 #endif
 
@@ -73,7 +73,7 @@ VCPU::~VCPU(void)
  *------------------------------------------------------------------*/
 bool VCPU::HaveSSE(void)
 {
-	return (m_bSSE && m_bOSSSE);
+	return (mSSE && mOSSSE);
 }
 
 /********************************************************************
@@ -98,10 +98,10 @@ bool VCPU::HaveSSE(void)
  *------------------------------------------------------------------*/
 void VCPU::Init(void)
 {
-	struct sigaction saved_sigill;
-	int		n = 0;
+	struct	sigaction vSavedSigill;
+	int		vN = 0;
 
-	memset(m_Name, '\0', sizeof(m_Name));
+	memset(mName, '\0', sizeof(mName));
 
 	/* Get the vendor name */
 	GetCPUVendor();
@@ -113,43 +113,43 @@ void VCPU::Init(void)
 	GetExtFeatures();
 
 	/* vendor specific stuff */
-	if ((strncmp(m_Vendor, "GenuineIntel", 12) == 0) && m_bEXT)
+	if ((strncmp(mVendor, "GenuineIntel", 12) == 0) && mEXT)
 	{
 		/* Intel family */
-		GetIntelInfo(&n);
+		GetIntelInfo(&vN);
 	}
-	else if ((strncmp(m_Vendor, "AuthenticAMD", 12) == 0) && m_bEXT)
+	else if ((strncmp(mVendor, "AuthenticAMD", 12) == 0) && mEXT)
 	{
 		/* AMD family */
-		GetAMDInfo(&n);
+		GetAMDInfo(&vN);
 	}
 
 	/* Test for OS SSE support */
-	m_bOSSSE = true;
-	sigaction(SIGILL, NULL, &saved_sigill);
+	mOSSSE = true;
+	sigaction(SIGILL, NULL, &vSavedSigill);
 	signal(SIGILL, (void (*)(int))sigill_handler);
 	__asm__ __volatile__ ("xorps %xmm0, %xmm0");
 
 	/* Output CPU information to trace file */
 	VTRACE(_CL("============ CPU Info =============\n"));
-	VTRACE(_CL("Vendor:         %s\n"), m_Vendor);
+	VTRACE(_CL("Vendor:         %s\n"), mVendor);
 	VTRACE(_CL("\n"));
 	VTRACE(_CL("Base features: "));
-	if (m_bSSE)		VTRACE(" SSE");
-	if (m_bSSE2)	VTRACE(" SSE2");
-	if (m_bMMX)		VTRACE(" MMX");
+	if (mSSE)	VTRACE(" SSE");
+	if (mSSE2)	VTRACE(" SSE2");
+	if (mMMX)	VTRACE(" MMX");
 	VTRACE("\n");
 
-	if (m_bEXT)
+	if (mEXT)
 	{
 		VTRACE(_CL("Ext features:  "));
-		if (m_b3DNOW)	VTRACE(" 3DNOW");
-		if (m_b3DNOWEX)	VTRACE(" 3DNOWEX");
-		if (m_bMMXEX)	VTRACE(" MMXEX");
+		if (m3DNOW)		VTRACE(" 3DNOW");
+		if (m3DNOWEX)	VTRACE(" 3DNOWEX");
+		if (mMMXEX)		VTRACE(" MMXEX");
 		VTRACE("\n");
 	}
 
-	VTRACE(_CL("OS SSE Support: %s\n"), (m_bOSSSE ? "Yes" : "No"));
+	VTRACE(_CL("OS SSE Support: %s\n"), (mOSSSE ? "Yes" : "No"));
 	
 	VTRACE(_CL("===================================\n"));
 
@@ -181,16 +181,16 @@ void VCPU::Init(void)
  *------------------------------------------------------------------*/
 void VCPU::GetCPUVendor()
 {
-	char *pVendor = m_Vendor;
+	char *vVendor = mVendor;
 
-	memset(m_Vendor, '\0', sizeof(m_Vendor));
+	memset(mVendor, '\0', sizeof(mVendor));
 	/* Get the vendor name */
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 	_asm {
 		mov		eax, 0
 		CPUID
 
-		mov		esi,		pVendor
+		mov		esi,		vVendor
 		mov		[esi],		ebx
 		mov		[esi+4],	edx
 		mov		[exi+8],	ecx
@@ -200,14 +200,14 @@ void VCPU::GetCPUVendor()
 	__asm__ __volatile__("\n\t"
 			"movl $0, %%eax\n\t"
 			"cpuid\n\t"
-			: "=b" (*(int*)&pVendor[0]),
-			  "=d" (*(int*)&pVendor[4]),
-			  "=c" (*(int*)&pVendor[8])
+			: "=b" (*(int*)&vVendor[0]),
+			  "=d" (*(int*)&vVendor[4]),
+			  "=c" (*(int*)&vVendor[8])
 			: 
 			: "eax"
 	);
 #endif
-	pVendor[12] = '\0';
+	vVendor[12] = '\0';
 }
 
 /*------------------------------------------------------------------*
@@ -235,13 +235,13 @@ void VCPU::GetBaseFeatures()
 
 		test	edx,		04000000h
 		jz		NOSSE2
-		mov		[m_bSSE2],	1
+		mov		[mSSE2],	1
 NOSSE2:	test	edx,		02000000h
 		jz		NOSSE
-		mov		[m_bSSE],	1
+		mov		[mSSE],	1
 NOSSE:	test	edx,		00800000h
 		jz		EXIT
-		mov		[m_bMMX],	1
+		mov		[mMMX],	1
 EXIT:
 	}		
 #elif VIPER_PLATFORM == PLATFORM_APPLE
@@ -265,9 +265,9 @@ EXIT:
 		"jz		EXIT\n\t"
 		"movb	$1, %2\n\t"
 		"EXIT:\n\t"
-		: "=m" (m_bSSE2),
-		  "=m" (m_bSSE),
-		  "=m" (m_bMMX)
+		: "=m" (mSSE2),
+		  "=m" (mSSE),
+		  "=m" (mMMX)
 		:
 		: "ax", "bx", "cx", "dx", "memory"
 	);
@@ -309,8 +309,8 @@ void VCPU::GetExtFeatures()
 			"jz		EXIT2\n\t"
 			"movb	$1, %1\n\t"
 			"EXIT2:\n"
-			: "=m" (m_bEXT),
-			  "=m" (m_b3DNOW)
+			: "=m" (mEXT),
+			  "=m" (m3DNOW)
 			:
 			: "ax", "bx", "cx", "dx", "memory"
 	);
@@ -333,7 +333,7 @@ void VCPU::GetExtFeatures()
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-void VCPU::GetIntelInfo(int *n)
+void VCPU::GetIntelInfo(int *pN)
 {
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 #elif VIPER_PLATFORM == PLATFORM_APPLE
@@ -341,13 +341,13 @@ void VCPU::GetIntelInfo(int *n)
 	__asm__ __volatile__ ("\n\t"
 			"mov	$1, %%eax\n\t"
 			"cpuid\n\t"
-			: "=b" (*n)
+			: "=b" (*pN)
 			:
 			: "eax", "cx", "dx", "memory"
 	);
-	int m=0;
-	memcpy(&m, n, sizeof(char));
-	*n = m;
+	int vM=0;
+	memcpy(&vM, pN, sizeof(char));
+	*pN = vM;
 #endif
 }
 
@@ -369,7 +369,7 @@ void VCPU::GetIntelInfo(int *n)
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-void VCPU::GetAMDInfo(int *n)
+void VCPU::GetAMDInfo(int *pN)
 {
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 #elif VIPER_PLATFORM == PLATFORM_APPLE
@@ -377,13 +377,13 @@ void VCPU::GetAMDInfo(int *n)
 	__asm__ __volatile__ (
 			"movl	$1, %%eax\n"
 			"cpuid\n"
-			: "=a" (*n)
+			: "=a" (*pN)
 			:
 			: "bx", "cx", "dx"
 	);
-	int m = 0;
-	memcpy(&m, n, sizeof(char));
-	*n = m;
+	int vM = 0;
+	memcpy(&vM, pN, sizeof(char));
+	*pN = vM;
 
 	__asm__ __volatile__ ("\n\t"
 			"movl	$0x80000001, %%eax\n"
@@ -396,8 +396,8 @@ void VCPU::GetAMDInfo(int *n)
 			"jz		AMD2\n"
 			"movb	$1, %1\n"
 			"AMD2:\n"
-			: "=m" (m_b3DNOWEX),
-			  "=m" (m_bMMXEX)
+			: "=m" (m3DNOWEX),
+			  "=m" (mMMXEX)
 			:
 			: "ax", "bx", "cx", "dx", "memory"
 	);

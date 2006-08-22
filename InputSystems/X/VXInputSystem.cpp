@@ -5,6 +5,7 @@
  *	Copyright (C) 2004 UDP Games   All Rights Reserved.						  *
  *                                                                            *
  *============================================================================*/
+#include "VXInputSystem.h"
 
 /* System Headers */
 #include <X11/Xlib.h>
@@ -12,7 +13,6 @@
 
 /* Local Headers */
 #include "VGlobals.h"
-#include "VXInputSystem.h"
 
 namespace UDP
 {
@@ -57,7 +57,7 @@ VXInputSystem::~VXInputSystem()
  *	@author		Josh Williams
  *	@date		24-Sep-2003
  *
- *	@param		kc	KeyCode to check for press.
+ *	@param		pKc		KeyCode to check for press.
  *
  *	@returns	True/false
  */
@@ -67,12 +67,12 @@ VXInputSystem::~VXInputSystem()
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-bool VXInputSystem::IsKeyDown(VKeyCode kc)
+bool VXInputSystem::IsKeyDown(VKeyCode pKc)
 {
-	if (m_KeyStates.find(kc) == m_KeyStates.end())
+	if (mKeyStates.find(pKc) == mKeyStates.end())
 		return false; // Key hasn't been pressed yet
 	else
-		return m_KeyStates[kc];
+		return mKeyStates[pKc];
 }
 
 /********************************************************************
@@ -100,10 +100,10 @@ bool VXInputSystem::IsKeyDown(VKeyCode kc)
  *------------------------------------------------------------------*/
 bool VXInputSystem::Initialize(VWindowSystem *pWins)
 {
-	ulong ulFlags = ButtonPressMask | KeyPressMask | KeyReleaseMask |
+	ulong vFlags = ButtonPressMask | KeyPressMask | KeyReleaseMask |
 					EnterWindowMask | LeaveWindowMask;
-	m_pWins = pWins;
-	m_pWins->CaptureInput(ulFlags);
+	mWins = pWins;
+	mWins->CaptureInput(vFlags);
 	//XAutoRepeatOff(m_Display);
 	return true;
 }
@@ -126,14 +126,14 @@ bool VXInputSystem::Initialize(VWindowSystem *pWins)
  *------------------------------------------------------------------*/
 void VXInputSystem::Update()
 {
-	VKeyEvent	*event;
-	bool		ks;
+	VKeyEvent	*vEvent;
+	bool		vKs;
 
-	while ((event = m_pWins->GetEvent()) != NULL)
+	while ((vEvent = mWins->GetEvent()) != NULL)
 	{
-		ks = (event->action == KEY_PRESS ? true : false);
-		m_KeyStates[event->code] = ks;
-		delete event;
+		vKs = (vEvent->mAction == KEY_PRESS ? true : false);
+		mKeyStates[vEvent->mCode] = vKs;
+		delete vEvent;
 	}
 }
 		

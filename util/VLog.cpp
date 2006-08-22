@@ -17,9 +17,9 @@ namespace UDP
 {
 
 /* Static Variables */
-char*		VLog::m_logName = NULL;
-ofstream	VLog::m_logFile;
-bool		VLog::m_bFlush = false;
+char*		VLog::mLogName = NULL;
+ofstream	VLog::mLogFile;
+bool		VLog::mFlush = false;
 
 /********************************************************************
  *																	*
@@ -28,20 +28,20 @@ bool		VLog::m_bFlush = false;
  ********************************************************************/
 VLog::VLog()
 {
-	m_bFlush = false;
+	mFlush = false;
 }
 
 VLog::~VLog()
 {
-	if (m_logFile.is_open())
+	if (mLogFile.is_open())
 	{
-		m_logFile.close();
+		mLogFile.close();
 	}
 
-	if (m_logName != NULL)
+	if (mLogName != NULL)
 	{
-		delete[] m_logName;
-		m_logName = NULL;
+		delete[] mLogName;
+		mLogName = NULL;
 	}
 }
 
@@ -56,45 +56,45 @@ VLog::~VLog()
  *                        O P E R A T I O N S                       *
  *																	*
  ********************************************************************/
-void VLog::SetName(const char *pcName)
+void VLog::SetName(const char *pName)
 {
-	if (m_logName == NULL)
+	if (mLogName == NULL)
 	{
-		m_logName = new char[strlen(pcName) + 1];
-		strcpy(m_logName, pcName);
+		mLogName = new char[strlen(pName) + 1];
+		strcpy(mLogName, pName);
 	}
 }
 
-void VLog::SetFlush(bool bFlush /*=true*/)
+void VLog::SetFlush(bool pFlush /*=true*/)
 {
-	m_bFlush = bFlush;
+	mFlush = pFlush;
 }
 
 VLog& VLog::Get()
 {
-	static VLog log;
+	static VLog vLog;
 
-	if (!m_logFile.is_open())
-		log.Init();
+	if (!mLogFile.is_open())
+		vLog.Init();
 
-	return log;
+	return vLog;
 }
 
-void VLog::Write(const char *pcText, ...) const
+void VLog::Write(const char *pText, ...) const
 {
-	char	buffer[1024];
-	va_list	args;
+	char	vBuffer[1024];
+	va_list	vArgs;
 
-	va_start(args, pcText);
-	vsnprintf(buffer, 1024, pcText, args);
-	va_end(args);
+	va_start(vArgs, pText);
+	vsnprintf(vBuffer, 1024, pText, vArgs);
+	va_end(vArgs);
 
-	if (m_logFile.is_open())
+	if (mLogFile.is_open())
 	{
-		m_logFile << buffer;
-		if (m_bFlush)
+		mLogFile << vBuffer;
+		if (mFlush)
 		{
-			m_logFile.flush();
+			mLogFile.flush();
 		}
 	}
 }
@@ -118,15 +118,15 @@ void VLog::Write(const char *pcText, ...) const
  ********************************************************************/
 bool VLog::Init()
 {
-	m_logFile.open(m_logName, ios_base::app);
-	if (m_logFile.is_open())
+	mLogFile.open(mLogName, ios_base::app);
+	if (mLogFile.is_open())
 	{
 		Write("************************************************\n");
 		Write("*           Log Opened                         *\n");
 		Write("************************************************\n");
 	}
 
-	return m_logFile.is_open();
+	return mLogFile.is_open();
 }
 
 } // End Namespace

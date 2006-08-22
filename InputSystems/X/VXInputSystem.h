@@ -21,9 +21,12 @@
 #if !defined(__VXINPUTSYSTEM_H_INCLUDED__)
 #define __VXINPUTSYSTEM_H_INCLUDED__
 
+/* System Headers */
 #include <GL/gl.h>
 #include <GL/glx.h>
 #include <X11/keysym.h>
+
+/* Local Headers */
 #include "VInputSystem.h"
 
 namespace UDP
@@ -40,7 +43,7 @@ namespace UDP
 		/*==================================*
 		 *			  ATTRIBUTES			*
 		 *==================================*/
-		bool			IsKeyDown(VKeyCode kc);
+		bool			IsKeyDown(VKeyCode pKc);
 
 		/*==================================*
 		 *			  OPERATIONS			*
@@ -63,7 +66,7 @@ namespace UDP
 		 *             VARIABLES            *
 		 *==================================*/
 	protected:
-		VWindowSystem	*m_pWins;
+		VWindowSystem	*mWins;
 	};
 
 }

@@ -23,65 +23,70 @@
 #if !defined(__VRENDERSYSTEM_H_INCLUDED__)
 #define __VRENDERSYSTEM_H_INCLUDED__
 
+/* System Headers */
+
+/* Local Headers */
+
 namespace UDP
 {
-	class VRenderSystem
-	{
-	public:
-		/*==================================*
-		 *	   CONSTRUCTION/DESTRUCTION		*
-		 *==================================*/
-		VRenderSystem(void) {};
-		virtual ~VRenderSystem(void) {};
 
-		/*==================================*
-		 *	        INITIALIZATION			*
-		 *==================================*/
-		virtual bool	Init(VWindowSystem *win, bool bSaveLog) = 0;
+class VRenderSystem
+{
+public:
+	/*==================================*
+	 *	   CONSTRUCTION/DESTRUCTION		*
+	 *==================================*/
+	VRenderSystem(void) {};
+	virtual ~VRenderSystem(void) {};
 
-		/*==================================*
-		 *	           CLEANUP    			*
-		 *==================================*/
-		virtual void	Release(void) = 0;
+	/*==================================*
+	 *	        INITIALIZATION			*
+	 *==================================*/
+	virtual bool	Init(VWindowSystem *pWin, bool pSaveLog) = 0;
 
-		/*==================================*
-		 *			  ATTRIBUTES			*
-		 *==================================*/
-		virtual void	IsRunning(void) = 0;
-	
-		/*==================================*
-		 *			  OPERATIONS			*
-		 *==================================*/
-		virtual bool	UseWindow(VWindowSystem *win) = 0;
-		virtual bool	BeginRendering(bool bClearPixel, bool bClearDepth,
-								bool bClearStencil) = 0;
-		virtual void	EndRendering(void) = 0;
-		virtual bool	Clear(bool bClearPixel, bool bClearDepth,
-								bool bClearStencil) = 0;
-		virtual void	SetClearColor(float fRed, float fGreen,
-								float fBlue) = 0;
+	/*==================================*
+	 *	           CLEANUP    			*
+	 *==================================*/
+	virtual void	Release(void) = 0;
 
-	protected:
-		/*==================================*
-		 *             CALLBACKS			*
-		 *==================================*/
+	/*==================================*
+	 *			  ATTRIBUTES			*
+	 *==================================*/
+	virtual void	IsRunning(void) = 0;
 
-	private:
-		/*==================================*
-		 *             INTERNALS            *
-		 *==================================*/
+	/*==================================*
+	 *			  OPERATIONS			*
+	 *==================================*/
+	virtual bool	UseWindow(VWindowSystem *pWin) = 0;
+	virtual bool	BeginRendering(bool pClearPixel, bool pClearDepth,
+							bool pClearStencil) = 0;
+	virtual void	EndRendering(void) = 0;
+	virtual bool	Clear(bool pClearPixel, bool pClearDepth,
+							bool pClearStencil) = 0;
+	virtual void	SetClearColor(float pRed, float pGreen,
+							float pBlue) = 0;
 
-	
-	private:
-		/*==================================*
-		 *             VARIABLES            *
-		 *==================================*/
-		VWindowSystem			*m_window;
-		ulong					m_ulWidth;
-		ulong					m_ulHeight;
-		bool					m_bWindowed;
-		bool					m_bRunning;
-	};
+protected:
+	/*==================================*
+	 *             CALLBACKS			*
+	 *==================================*/
+
+private:
+	/*==================================*
+	 *             INTERNALS            *
+	 *==================================*/
+
+
+private:
+	/*==================================*
+	 *             VARIABLES            *
+	 *==================================*/
+	VWindowSystem			*mWindow;
+	ulong					mWidth;
+	ulong					mHeight;
+	bool					mWindowed;
+	bool					mRunning;
+};
 
 } // End Namespace
 

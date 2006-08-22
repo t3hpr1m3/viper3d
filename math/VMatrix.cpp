@@ -391,7 +391,8 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 {
 	VMatrix mResult;
 
-	if (VCPU::HaveSSE())
+#if 1 == 2
+//	if (VCPU::HaveSSE())
 	{
 		float *pA = (float*)this;
 		float *pB = (float*)&m;
@@ -580,6 +581,7 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 	}
 	else
 	{
+#endif
 		for (byte i = 0; i < 4; i++)
 		{
 			for (byte j = 0; j < 4; j++)
@@ -590,7 +592,9 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 				mResult[i][j] += m[i][3] * mat[3][j];
 			}
 		}
+#if 1 == 2
 	}
+#endif
 	return mResult;
 }
 
