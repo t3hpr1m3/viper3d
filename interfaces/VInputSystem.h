@@ -1,13 +1,3 @@
-/**
- *	@class		UDP::VInputSystem
- *
- *	@brief		Defines the interface for our input handling class.
- *	@author		Josh Williams
- *	@version	0.1.0
- *	@date		20-Sep-2003
- *	@remarks	This class will be overridden by platform dependent
- *				implementations, such as X or DirectInput.
- */
 /*============================================================================*
  *                                                                            *
  * 	This file is part of the Viper3D Game Engine.                             *
@@ -49,6 +39,16 @@ public:
 	}
 };
 
+/**
+ *	@class		VInputSystem
+ *
+ *	@brief		Defines the interface for our input handling class.
+ *	@author		Josh Williams
+ *	@version	0.1.0
+ *	@date		20-Sep-2003
+ *	@remarks	This class will be overridden by platform dependent
+ *				implementations, such as X or DirectInput.
+ */
 class VInputSystem
 {
 public:

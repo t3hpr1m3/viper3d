@@ -1,11 +1,3 @@
-/**
- *	@class		UDP::VWindow
- *
- *	@brief		Helper class for loading the specific Window System
- *	@author		Josh Williams
- *	@version	0.1.0
- *	@date		2004-Sep-02
- */
 /*============================================================================*
  *                                                                            *
  *  This file is part of the Viper3D Game Engine.                             *
@@ -29,50 +21,56 @@
 
 namespace UDP
 {
-	typedef void (*DLL_WINCREATE2)(VWindowSystem **pWindow);
-	typedef void (*DLL_WINDESTROY2)(VWindowSystem *pWindow);
 
-	class VWindow
-	{
-	public:
-		/*==================================*
-		 *	   CONSTRUCTION/DESTRUCTION		*
-		 *==================================*/
-		VWindow(void);
-		virtual ~VWindow(void);
+/**
+ *	@class		VWindow
+ *
+ *	@brief		Helper class for loading the specific Window System
+ *	@author		Josh Williams
+ *	@version	0.1.0
+ *	@date		2004-Sep-02
+ */
+class VWindow
+{
+public:
+	/*==================================*
+	 *	   CONSTRUCTION/DESTRUCTION		*
+	 *==================================*/
+	VWindow(void);
+	virtual ~VWindow(void);
 
-		/*==================================*
-		 *			  ATTRIBUTES			*
-		 *==================================*/
-	
-		/*==================================*
-		 *			  OPERATIONS			*
-		 *==================================*/
-		bool CreateDevice(char *pAPI);
-		void Release(void);
-		VWindowSystem*	GetDevice(void);
+	/*==================================*
+	 *			  ATTRIBUTES			*
+	 *==================================*/
 
-	protected:
-		/*==================================*
-		 *             CALLBACKS			*
-		 *==================================*/
+	/*==================================*
+	 *			  OPERATIONS			*
+	 *==================================*/
+	bool CreateDevice(char *pAPI);
+	void Release(void);
+	VWindowSystem*	GetDevice(void);
 
-	private:
-		/*==================================*
-		 *             INTERNALS            *
-		 *==================================*/
+protected:
+	/*==================================*
+	 *             CALLBACKS			*
+	 *==================================*/
 
-	
-	private:
-		/*==================================*
-		 *             VARIABLES            *
-		 *==================================*/
-		VDynamicLib			mWindowLib;
-		VWindowSystem		*mDevice;
-		DLL_WINCREATE		*mCreate;
-		DLL_WINDESTROY		*mDestroy;
+private:
+	/*==================================*
+	 *             INTERNALS            *
+	 *==================================*/
 
-	};
+
+private:
+	/*==================================*
+	 *             VARIABLES            *
+	 *==================================*/
+	VDynamicLib			mWindowLib;
+	VWindowSystem		*mDevice;
+	DLL_WINCREATE		*mCreate;
+	DLL_WINDESTROY		*mDestroy;
+
+};
 
 } // End Namespace
 

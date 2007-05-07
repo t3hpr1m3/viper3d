@@ -13,8 +13,11 @@
 #if !defined(__VMATH_H_INCLUDED__)
 #define __VMATH_H_INCLUDED__
 
-#include "VGlobals.h"
+/* System Headers */
 #include <iostream>
+
+/* Local Headers */
+#include "VGlobals.h"
 
 using std::ostream;
 

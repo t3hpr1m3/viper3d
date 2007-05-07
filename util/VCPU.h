@@ -1,11 +1,3 @@
-/**
- *	@class		UDP::VCPU
- *
- *	@brief		Extracts information about the CPU's capabilities.
- *	@author		Josh Williams
- *	@version	0.1.0
- *	@date		2004-Sep-09
- */
 /*============================================================================*
  *                                                                            *
  *  This file is part of the Viper3D Game Engine.                             *
@@ -28,6 +20,14 @@
 namespace UDP
 {
 
+/**
+ *	@class		VCPU
+ *
+ *	@brief		Extracts information about the CPU's capabilities.
+ *	@author		Josh Williams
+ *	@version	0.1.0
+ *	@date		2004-Sep-09
+ */
 class VCPU
 {
 protected:

@@ -1,11 +1,3 @@
-/**
- *	@class		UDP::VWindowSystem
- *
- *	@brief		Interface for the platform specific Window Systems.
- *	@author		Josh Williams
- *	@version	0.1.0
- *	@date		02-Sep-2004
- */
 /*============================================================================*
  *                                                                            *
  *  This file is part of the Viper3D Game Engine.                             *
@@ -43,8 +35,14 @@ public:
 	uint mFontID;
 };
 
-	
-
+/**
+ *	@class		VWindowSystem
+ *
+ *	@brief		Interface for the platform specific Window Systems.
+ *	@author		Josh Williams
+ *	@version	0.1.0
+ *	@date		02-Sep-2004
+ */
 class VWindowSystem
 {
 public:

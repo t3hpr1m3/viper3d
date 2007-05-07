@@ -1,17 +1,22 @@
 /*============================================================================*
  *                                                                            *
- * 	This source file is part of the UDP Game Engine.                          *
+ *  This file is part of the Viper3D Game Engine.                             *
  *                                                                            *
- *	Copyright (C) 2003 UDP Games   All Rights Reserved.                       *
+ *  Copyright (C) 2004 UDP Games   All Rights Reserved.                       *
+ *                                                                            *
+ *============================================================================*
+ *                                  CHANGELOG                                 *
+ *    Date      Description                                     Author        *
+ * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
+#include "VNode.h"
 
 /* System Headers */
 #include <stdlib.h>
 #include <GL/gl.h>
 
 /* Local Headers */
-#include "VNode.h"
 
 namespace UDP
 {

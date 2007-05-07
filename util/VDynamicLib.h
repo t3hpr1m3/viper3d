@@ -1,24 +1,14 @@
-/**
- *	@class		UDP::VDynamicLib
- *
- *	@brief		Represents a dynamically loaded library (.dll/.so)
- *	@author		Josh Williams
- *	@version	0.1.0
- *	@date		25-Sep-2003
- *	@remarks	Allows a dynamic library to be loaded and function pointers
- *				obtained.  Handles cross-platform logic internally.
- */
 /*============================================================================*
- *																			  *
- * 	This file is part of the Viper3D Game Engine.							  *
- *																			  *
- *	Copyright (C) 2004 UDP Games   All Rights Reserved.						  *
- *																			  *
+ *                                                                            *
+ *  This file is part of the Viper3D Game Engine.                             *
+ *                                                                            *
+ *  Copyright (C) 2004 UDP Games   All Rights Reserved.                       *
+ *                                                                            *
  *============================================================================*
  *                                  CHANGELOG                                 *
- *    Date      Description                                   	Author        *
- * -----------  ----------------------------------------------	------------- *
- *																			  *
+ *    Date      Description                                     Author        *
+ * -----------  ----------------------------------------------  ------------- *
+ *                                                                            *
  *============================================================================*/
 #if !defined(__VDYNAMICLIB_H_INCLUDED__)
 #define __VDYNAMICLIB_H_INCLUDED__
@@ -49,6 +39,16 @@
 namespace UDP
 {
 
+/**
+ *	@class		VDynamicLib
+ *
+ *	@brief		Represents a dynamically loaded library (.dll/.so)
+ *	@author		Josh Williams
+ *	@version	0.1.0
+ *	@date		25-Sep-2003
+ *	@remarks	Allows a dynamic library to be loaded and function pointers
+ *				obtained.  Handles cross-platform logic internally.
+ */
 class VDynamicLib
 {
 public:

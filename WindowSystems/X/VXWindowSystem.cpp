@@ -75,7 +75,6 @@ VXWindowSystem::VXWindowSystem(void)
 
 VXWindowSystem::~VXWindowSystem(void)
 {
-	printf("VXWindowSystem DTOR\n");
 	if (mInitialized)
 	{
 		DestroyWindow();

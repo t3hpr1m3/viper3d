@@ -1,15 +1,20 @@
 /*============================================================================*
  *                                                                            *
- *  This source file is part of the Viper3D Game Engine.                      *
+ * 	This file is part of the Viper3D Game Engine.							  *
  *                                                                            *
- *	Copyright (C) 2004 UDP Games   All Rights Reserved.                       *
+ *	Copyright (C) 2004 UDP Games   All Rights Reserved.						  *
+ *                                                                            *
+ *============================================================================*
+ *                                  CHANGELOG                                 *
+ *    Date      Description                                     Author        *
+ * -----------  ----------------------------------------------	------------- *
  *                                                                            *
  *============================================================================*/
+#include "VMath.h"
 
 /* System Headers */
 
 /* Local Headers */
-#include "VMath.h"
 
 namespace UDP
 {

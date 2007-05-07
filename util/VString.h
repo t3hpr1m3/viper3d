@@ -1,13 +1,3 @@
-/**
- *	@class		UDP::VString
- *
- *	@brief		Generic string handling class.
- *	@author		Josh Williams
- *	@version	0.1.0
- *	@date		19-Sep-2003
- *	@remarks	Provides a set of simple functions for handling dynamic strings
- *				within our applications.
- */
 /*============================================================================*
  *                                                                            *
  *  This file is part of the Viper3D Game Engine.                             *
@@ -23,14 +13,27 @@
 #if !defined(__VSTRING_H_INCLUDED__)
 #define __VSTRING_H_INCLUDED__
 
+/* System Headers */
 #include <cstring>
 #include <iostream>
+
+/* Local Headers */
 
 using std::ostream;
 
 namespace UDP
 {
 
+/**
+ *	@class		VString
+ *
+ *	@brief		Generic string handling class.
+ *	@author		Josh Williams
+ *	@version	0.1.0
+ *	@date		19-Sep-2003
+ *	@remarks	Provides a set of simple functions for handling dynamic strings
+ *				within our applications.
+ */
 class VString
 {
 public:

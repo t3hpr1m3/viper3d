@@ -433,6 +433,7 @@ void VCamera::Render()
  *------------------------------------------------------------------*/
 void VCamera::OnRender()
 {
+	/* TODO: Move the API specific logic here to the renderer */
 	UpdateView();
 	UpdateFrustum();
 

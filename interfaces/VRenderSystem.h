@@ -1,13 +1,3 @@
-/**
- *	@class		UDP::VRenderSystem
- *
- *	@brief		Abstract interface for the platform specific renderers.
- *	@author		Josh Williams
- *	@version	0.1.0
- *	@date		2004-Aug-31
- *	@remarks	All of the specific render devices (OpenGL, DirectX, etc) will
- *				derive from this base class.
- */
 /*============================================================================*
  *                                                                            *
  *  This file is part of the Viper3D Game Engine.                             *
@@ -30,6 +20,16 @@
 namespace UDP
 {
 
+/**
+ *	@class		VRenderSystem
+ *
+ *	@brief		Abstract interface for the platform specific renderers.
+ *	@author		Josh Williams
+ *	@version	0.1.0
+ *	@date		2004-Aug-31
+ *	@remarks	All of the specific render devices (OpenGL, DirectX, etc) will
+ *				derive from this base class.
+ */
 class VRenderSystem
 {
 public:

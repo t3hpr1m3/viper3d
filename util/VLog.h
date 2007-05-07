@@ -1,11 +1,3 @@
-/**
- *	@class		UDP::VLog
- *
- *	@brief		Quick and dirty logging class.
- *	@author		Josh Williams
- *	@version	0.1.0
- *	@date		2004-Aug-31
- */
 /*============================================================================*
  *                                                                            *
  *  This file is part of the Viper3D Game Engine.                             *
@@ -40,6 +32,14 @@ using std::ios_base;
 namespace UDP
 {
 
+/**
+ *	@class		VLog
+ *
+ *	@brief		Quick and dirty logging class.
+ *	@author		Josh Williams
+ *	@version	0.1.0
+ *	@date		2004-Aug-31
+ */
 class VLog
 {
 protected:
