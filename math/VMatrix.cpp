@@ -33,6 +33,7 @@ const VMatrix VMatrix::MATRIX_IDENTITY (
  ********************************************************************/
 VMatrix::VMatrix()
 {
+	memset(_m, 0, 16*sizeof(float));
 
 }
 VMatrix::VMatrix(float m00, float m01, float m02, float m03,
@@ -416,26 +417,12 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 {
 	VMatrix mResult;
 
-#if 1 == 2
-//	if (VCPU::HaveSSE())
+	if (VCPU::HaveSSE())
 	{
 		float *pA = (float*)this;
-		float *pB = (float*)&m;
+		float *pB = (float*)&mat;
 		float *pM = (float*)&mResult;
 
-		memset(pM, 0, sizeof(VMatrix));
-
-		for(unsigned char i=0; i<4; i++)
-		{
-			for(unsigned char j=0; j<4; j++)
-			{
-				pM[4*i+j] += pA[4*i]   * pB[j];
-				pM[4*i+j] += pA[4*i+1] * pB[4+j];
-				pM[4*i+j] += pA[4*i+2] * pB[8+j];
-				pM[4*i+j] += pA[4*i+3] * pB[12+j];
-			}
-		}
-/* Commented until I can figure out a way to do this on *nix */
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 		__asm {
 			mov edx, dword ptr [esp+4] ; src1
@@ -516,89 +503,83 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 		}
 #elif VIPER_PLATFORM == PLATFORM_APPLE
 #elif VIPER_PLATFORM == PLATFORM_LINUX
-		const VMatrix *pSrc1 = this;
-		const VMatrix *pSrc2 = &mat;
-		VMatrix *pDest = &mResult;
-		asm (
-			"mov %0, 	%%edx;"
-			"mov %1,	%%ecx;"
-			"mov %2,	%%eax\n\t"
-			"movss xmm0, dword ptr [edx]\n\t"
-			"movups xmm1, xmmword ptr [ecx]\n\t"
-			"shufps xmm0, xmm0, 0\n\t"
-			"movss xmm2, dword ptr [edx+4]\n\t"
-			"mulps xmm0, xmm1\n\t"
-			"shufps xmm2, xmm2, 0\n\t"
-			"movups xmm3, xmmword ptr [ecx+10h]\n\t"
-			"movss xmm7, dword ptr [edx+8]\n\t"
-			"mulps xmm2, xmm3\n\t"
-			"shufps xmm7, xmm7, 0\n\t"
-			"addps xmm0, xmm2\n\t"
-			"movups xmm4, xmmword ptr [ecx+20h]\n\t"
-			"movss xmm2, dword ptr [edx+0Ch]n\t"
-			"mulps xmm7, xmm4\n\t"
-			"shufps xmm2, xmm2, 0\n\t"
-			"addps xmm0, xmm7\n\t"
-			"movups xmm5, xmmword ptr [ecx+30h]\n\t"
-			"movss xmm6, dword ptr [edx+10h]\n\t"
-			"mulps xmm2, xmm5\n\t"
-			"movss xmm7, dword ptr [edx+14h]\n\t"
-			"shufps xmm6, xmm6, 0\n\t"
-			"addps xmm0, xmm2\n\t"
-			"shufps xmm7, xmm7, 0\n\t"
-			"movlps qword ptr [eax], xmm0\n\t"
-			"movhps qword ptr [eax+8], xmm0\n\t"
-			"mulps xmm7, xmm3\n\t"
-			"movss xmm0, dword ptr [edx+18h]\n\t"
-			"mulps xmm6, xmm1\n\t"
-			"shufps xmm0, xmm0, 0\n\t"
-			"addps xmm6, xmm7\n\t"
-			"mulps xmm0, xmm4\n\t"
-			"movss xmm2, dword ptr [edx+24h]\n\t"
-			"addps xmm6, xmm0\n\t"
-			"movss xmm0, dword ptr [edx+1Ch]\n\t"
-			"movss xmm7, dword ptr [edx+20h]\n\t"
-			"shufps xmm0, xmm0, 0\n\t"
-			"shufps xmm7, xmm7, 0\n\t"
-			"mulps xmm0, xmm5\n\t"
-			"mulps xmm7, xmm1\n\t"
-			"addps xmm6, xmm0\n\t"
-			"shufps xmm2, xmm2, 0\n\t"
-			"movlps qword ptr [eax+10h], xmm6\n\t"
-			"movhps qword ptr [eax+18h], xmm6\n\t"
-			"mulps xmm2, xmm3\n\t"
-			"movss xmm6, dword ptr [edx+28h]\n\t"
-			"addps xmm7, xmm2\n\t"
-			"shufps xmm6, xmm6, 0\n\t"
-			"movss xmm2, dword ptr [edx+2Ch]\n\t"
-			"mulps xmm6, xmm4\n\t"
-			"shufps xmm2, xmm2, 0\n\t"
-			"addps xmm7, xmm6\n\t"
-			"mulps xmm2, xmm5\n\t"
-			"movss xmm0, dword ptr [edx+34h]\n\t"
-			"addps xmm7, xmm2\n\t"
-			"shufps xmm0, xmm0, 0\n\t"
-			"movlps qword ptr [eax+20h], xmm7\n\t"
-			"movss xmm2, dword ptr [edx+30h]\n\t"
-			"movhps qword ptr [eax+28h], xmm7\n\t"
-			"mulps xmm0, xmm3\n\t"
-			"shufps xmm2, xmm2, 0\n\t"
-			"movss xmm6, dword ptr [edx+38h]\n\t"
-			"mulps xmm2, xmm1\n\t"
-			"shufps xmm6, xmm6, 0\n\t"
-			"addps xmm2, xmm0\n\t"
-			"mulps xmm6, xmm4\n\t"
-			"movss xmm7, dword ptr [edx+3Ch]\n\t"
-			"shufps xmm7, xmm7, 0\n\t"
-			"addps xmm2, xmm6\n\t"
-			"mulps xmm7, xmm5\n\t"
-			"addps xmm2, xmm7\n\t"
-			"movups xmmword ptr [eax+30h], xmm2\n\t"
-			"ret"
+		__asm__ __volatile__ (
+			"mov	%0,				%%eax\n\t"
+			"mov	%1,				%%ecx\n\t"
+			"mov	%2,				%%edx\n\t"
+			/* Grab the 4 rows of matrix B */
+			"movups	(%%ecx),		%%xmm1\n\t"
+			"movups	0x10(%%ecx),	%%xmm2\n\t"
+			"movups 0x20(%%ecx),	%%xmm3\n\t"
+			"movups	0x30(%%ecx),	%%xmm4\n\t"
+			"movss	(%%eax),		%%xmm0\n\t"
+			"movss	4(%%eax),		%%xmm5\n\t"
+			"movss	8(%%eax),		%%xmm6\n\t"
+			"movss	0x0c(%%eax),	%%xmm7\n\t"
+			"shufps	$0x00,			%%xmm0,	%%xmm0\n\t"
+			"shufps $0x00,			%%xmm5, %%xmm5\n\t"
+			"shufps $0x00,			%%xmm6, %%xmm6\n\t"
+			"shufps $0x00,			%%xmm7,	%%xmm7\n\t"
+			"mulps	%%xmm1,			%%xmm0\n\t"
+			"mulps	%%xmm2,			%%xmm5\n\t"
+			"mulps	%%xmm3,			%%xmm6\n\t"
+			"mulps	%%xmm4,			%%xmm7\n\t"
+			"addps	%%xmm5,			%%xmm0\n\t"
+			"addps	%%xmm6,			%%xmm0\n\t"
+			"addps	%%xmm7,			%%xmm0\n\t"
+			"movups	%%xmm0,			(%%edx)\n\t"
+			"movss	0x10(%%eax),	%%xmm0\n\t"
+			"movss	0x14(%%eax),	%%xmm5\n\t"
+			"movss	0x18(%%eax),	%%xmm6\n\t"
+			"movss	0x1c(%%eax),	%%xmm7\n\t"
+			"shufps	$0x00,			%%xmm0, %%xmm0\n\t"
+			"shufps	$0x00,			%%xmm5, %%xmm5\n\t"
+			"shufps	$0x00,			%%xmm6, %%xmm6\n\t"
+			"shufps	$0x00,			%%xmm7, %%xmm7\n\t"
+			"mulps	%%xmm1,			%%xmm0\n\t"
+			"mulps	%%xmm2,			%%xmm5\n\t"
+			"mulps	%%xmm3,			%%xmm6\n\t"
+			"mulps	%%xmm4,			%%xmm7\n\t"
+			"addps	%%xmm5,			%%xmm0\n\t"
+			"addps	%%xmm6,			%%xmm0\n\t"
+			"addps	%%xmm7,			%%xmm0\n\t"
+			"movups	%%xmm0,			0x10(%%edx)\n\t"
+			"movss	0x20(%%eax),	%%xmm0\n\t"
+			"movss	0x24(%%eax),	%%xmm5\n\t"
+			"movss	0x28(%%eax),	%%xmm6\n\t"
+			"movss	0x2c(%%eax),	%%xmm7\n\t"
+			"shufps	$0x00,			%%xmm0, %%xmm0\n\t"
+			"shufps	$0x00,			%%xmm5, %%xmm5\n\t"
+			"shufps	$0x00,			%%xmm6, %%xmm6\n\t"
+			"shufps	$0x00,			%%xmm7, %%xmm7\n\t"
+			"mulps	%%xmm1,			%%xmm0\n\t"
+			"mulps	%%xmm2,			%%xmm5\n\t"
+			"mulps	%%xmm3,			%%xmm6\n\t"
+			"mulps	%%xmm4,			%%xmm7\n\t"
+			"addps	%%xmm5,			%%xmm0\n\t"
+			"addps	%%xmm6,			%%xmm0\n\t"
+			"addps	%%xmm7,			%%xmm0\n\t"
+			"movups	%%xmm0,			0x20(%%edx)\n\t"
+			"movss	0x30(%%eax),	%%xmm0\n\t"
+			"movss	0x34(%%eax),	%%xmm5\n\t"
+			"movss	0x38(%%eax),	%%xmm6\n\t"
+			"movss	0x3c(%%eax),	%%xmm7\n\t"
+			"shufps	$0x00,			%%xmm0, %%xmm0\n\t"
+			"shufps	$0x00,			%%xmm5, %%xmm5\n\t"
+			"shufps	$0x00,			%%xmm6, %%xmm6\n\t"
+			"shufps	$0x00,			%%xmm7, %%xmm7\n\t"
+			"mulps	%%xmm1,			%%xmm0\n\t"
+			"mulps	%%xmm2,			%%xmm5\n\t"
+			"mulps	%%xmm3,			%%xmm6\n\t"
+			"mulps	%%xmm4,			%%xmm7\n\t"
+			"addps	%%xmm5,			%%xmm0\n\t"
+			"addps	%%xmm6,			%%xmm0\n\t"
+			"addps	%%xmm7,			%%xmm0\n\t"
+			"movups	%%xmm0,			0x30(%%edx)\n\t"
 			:
-			: "m" (pSrc1),
-			  "m" (pSrc2),
-			  "m" (pDest)
+			: "m" (pA),
+			  "m" (pB),
+			  "m" (pM)
 			: "eax", "edx", "ecx", "memory"
 		);
 
@@ -606,7 +587,6 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 	}
 	else
 	{
-#endif
 		for (byte i = 0; i < 4; i++)
 		{
 			for (byte j = 0; j < 4; j++)
@@ -617,9 +597,7 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 				mResult[i][j] += m[i][3] * mat[3][j];
 			}
 		}
-#if 1 == 2
 	}
-#endif
 	return mResult;
 }
 

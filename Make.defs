@@ -23,8 +23,8 @@ RANLIB = ranlib
 
 # Compiler flags
 #CPPFLAGS = -Wall -pedantic -ansi -O2
-CPPFLAGS = -Wall -pedantic -ansi -O2 -DDEBUG -DPROFILER
-#CPPFLAGS = -Wall -pedantic -ansi -O2 -g -DDEBUG
+#CPPFLAGS = -Wall -pedantic -ansi -O2 -DDEBUG -DPROFILER
+CPPFLAGS = -Wall -pedantic -ansi -O2 -g -DDEBUG -DPROFILER
 #CPPFLAGS = -Wall -pedantic -ansi -O2 -DBENCHMARK
 
 # Global include directories

@@ -13,3 +13,5 @@ using namespace UDP;
 /* vectest.cpp */
 void TestVectors();
 
+/* matrixtext.cpp */
+void TestMatrices();

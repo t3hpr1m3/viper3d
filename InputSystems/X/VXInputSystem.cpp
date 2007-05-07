@@ -18,8 +18,30 @@ namespace UDP
 {
 
 /* creation functions */
-extern "C" {
+class DLL_INPCREATE_IMPL : public DLL_INPCREATE
+{
+public:
+	void operator()(VInputSystem **pInput)
+	{
+		*pInput = (VInputSystem*)new VXInputSystem();
+	}
+};
+class DLL_INPDESTROY_IMPL : public DLL_INPDESTROY
+{
+public:
+	void operator()(VInputSystem *pInput)
+	{
+		delete (VXInputSystem*)pInput;
+	}
+};
 
+extern "C" {
+_ViperExport
+DLL_INPCREATE_IMPL Construct;
+_ViperExport
+DLL_INPDESTROY_IMPL Destruct;
+
+/*
 _ViperExport void Construct(VInputSystem **pInput)
 {
 	*pInput = (VInputSystem*)new VXInputSystem();
@@ -28,6 +50,7 @@ _ViperExport void Destruct(VInputSystem *pInput)
 {
 	delete (VXInputSystem*)pInput;
 }
+*/
 
 } // extern "C"
 

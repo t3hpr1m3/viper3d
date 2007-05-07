@@ -21,8 +21,8 @@
 
 namespace UDP
 {
-typedef void (*DLL_INPCREATE)(VInputSystem **pInput);
-typedef void (*DLL_INPDESTROY)(VInputSystem *pInput);
+typedef void (*DLL_INPCREATE2)(VInputSystem **pInput);
+typedef void (*DLL_INPDESTROY2)(VInputSystem *pInput);
 
 /**
  *	@class		VInput
@@ -69,8 +69,8 @@ private:
 	 *==================================*/
 	VDynamicLib		mInputLib;		/**< Dynamic library object	*/			
 	VInputSystem	*mDevice;		/**< Actual InputSystem pointer	*/
-	DLL_INPCREATE	mCreate;		/**< Pointer to creation function */
-	DLL_INPDESTROY	mDestroy;		/**< Pointer to deletion function */
+	DLL_INPCREATE	*mCreate;		/**< Pointer to creation function */
+	DLL_INPDESTROY	*mDestroy;		/**< Pointer to deletion function */
 
 };
 

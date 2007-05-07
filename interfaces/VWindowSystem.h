@@ -135,6 +135,19 @@ protected:
 	std::ofstream	mLog;
 };
 
+class DLL_WINCREATE
+{
+public:
+	virtual ~DLL_WINCREATE() {}
+	virtual void operator()(VWindowSystem **pWins) {}
+};
+class DLL_WINDESTROY
+{
+public:
+	virtual ~DLL_WINDESTROY() {}
+	virtual void operator()(VWindowSystem *pWins) {}
+};
+
 } // End Namespace
 
 #endif // __VWINDOWSYSTEM_H_INCLUDED__

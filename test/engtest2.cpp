@@ -15,12 +15,15 @@ int main(int argc, char *argv[])
 	VLog::SetFlush();
 	VCPU::Init();
 	TestVectors();
+	TestMatrices();
+	return 0;
 
-	if (!vEngine.Create(300, 300))
+	if (!vEngine.Create(300, 300, true))
 	{
 		cerr << "Unable to create engine." << endl;
 		return -1;
 	}
+	printf("engine created\n");
 
 	vEngine.MainLoop();
 

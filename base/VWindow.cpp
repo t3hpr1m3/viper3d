@@ -96,7 +96,7 @@ bool VWindow::CreateDevice(char *pAPI)
 		VTRACE(_CL("Library loaded successfully\n"));
 
 		/* obtain pointer to the creation function */
-		mCreate = (DLL_WINCREATE)mWindowLib.GetSymbol("Construct");
+		mCreate = static_cast<DLL_WINCREATE*>(mWindowLib.GetSymbol("Construct"));
 		if (mCreate == NULL)
 		{
 			VTRACE(_CL("Unable to locate constructor.\n"));
@@ -104,7 +104,7 @@ bool VWindow::CreateDevice(char *pAPI)
 		}
 
 		/* obtain pointer to the deletion function */
-		mDestroy = (DLL_WINDESTROY)mWindowLib.GetSymbol("Destruct");
+		mDestroy = static_cast<DLL_WINDESTROY*>(mWindowLib.GetSymbol("Destruct"));
 		if (mDestroy == NULL)
 		{
 			VTRACE(_CL("Unable to locate cleanup function.\n"));
@@ -112,7 +112,7 @@ bool VWindow::CreateDevice(char *pAPI)
 		}
 
 		/* try and create the WindowSystem */
-		mCreate(&mDevice);
+		(*mCreate)(&mDevice);
 		if (mDevice == NULL)
 		{
 			VTRACE(_CL("Unable to create window device.\n"));
@@ -147,7 +147,7 @@ bool VWindow::CreateDevice(char *pAPI)
 void VWindow::Release(void)
 {
 	VTRACE(_CL("Releasing device...\n"));
-	mDestroy(mDevice);
+	(*mDestroy)(mDevice);
 	mDevice = NULL;
 }
 /********************************************************************

@@ -17,7 +17,8 @@ INC_PATH	=	-I$(VIPER_PATH)base \
 CFLAGS		= -Wall -pedantic -ansi -O2
 
 OBJS		=	engtest2.o \
-				vectest.o
+				vectest.o \
+				matrixtest.o
 
 EXEC		= engtest2
 

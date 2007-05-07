@@ -95,7 +95,7 @@ bool VInput::CreateDevice(char *pAPI)
 		VTRACE(_CL("Library loaded successfully\n"));
 
 		/* obtain pointer to the creation function */
-		mCreate = (DLL_INPCREATE)mInputLib.GetSymbol("Construct");
+		mCreate = static_cast<DLL_INPCREATE*>(mInputLib.GetSymbol("Construct"));
 		if (mCreate == NULL)
 		{
 			VTRACE(_CL("Unable to locate constructor.\n"));
@@ -103,7 +103,7 @@ bool VInput::CreateDevice(char *pAPI)
 		}
 
 		/* obtain pointer to the deletion function */
-		mDestroy = (DLL_INPDESTROY)mInputLib.GetSymbol("Destruct");
+		mDestroy = static_cast<DLL_INPDESTROY*>(mInputLib.GetSymbol("Destruct"));
 		if (mDestroy == NULL)
 		{
 			VTRACE(_CL("Unable to locate destructor.\n"));
@@ -111,7 +111,7 @@ bool VInput::CreateDevice(char *pAPI)
 		}
 
 		/* try to create the actual input device */
-		mCreate(&mDevice);
+		(*mCreate)(&mDevice);
 		if (mDevice == NULL)
 		{
 			VTRACE(_CL("Unable to create input device.\n"));
@@ -146,7 +146,7 @@ bool VInput::CreateDevice(char *pAPI)
 void VInput::Release(void)
 {
 	VTRACE(_CL("Releasing device...\n"));
-	mDestroy(mDevice);
+	(*mDestroy)(mDevice);
 	mDevice = NULL;
 }
 /********************************************************************

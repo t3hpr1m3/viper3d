@@ -29,8 +29,8 @@
 
 namespace UDP
 {
-	typedef void (*DLL_WINCREATE)(VWindowSystem **pWindow);
-	typedef void (*DLL_WINDESTROY)(VWindowSystem *pWindow);
+	typedef void (*DLL_WINCREATE2)(VWindowSystem **pWindow);
+	typedef void (*DLL_WINDESTROY2)(VWindowSystem *pWindow);
 
 	class VWindow
 	{
@@ -69,8 +69,8 @@ namespace UDP
 		 *==================================*/
 		VDynamicLib			mWindowLib;
 		VWindowSystem		*mDevice;
-		DLL_WINCREATE		mCreate;
-		DLL_WINDESTROY		mDestroy;
+		DLL_WINCREATE		*mCreate;
+		DLL_WINDESTROY		*mDestroy;
 
 	};
 

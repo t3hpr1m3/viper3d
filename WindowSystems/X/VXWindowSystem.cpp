@@ -22,9 +22,31 @@ using std::endl;
 namespace UDP
 {
 
+class DLL_WINCREATE_IMPL : public DLL_WINCREATE
+{
+public:
+	void operator()(VWindowSystem **pWins)
+	{
+		*pWins = (VWindowSystem*)new VXWindowSystem();
+	}
+};
+class DLL_WINDESTROY_IMPL : public DLL_WINDESTROY
+{
+public:
+	void operator()(VWindowSystem *pWins)
+	{
+		delete (VXWindowSystem*)pWins;
+	}
+};
+
 /* creation functions */
 extern "C" {
+_ViperExport
+DLL_WINCREATE_IMPL Construct;
+_ViperExport
+DLL_WINDESTROY_IMPL Destruct;
 
+/*
 _ViperExport void Construct(VWindowSystem **pWins)
 {
 	*pWins = (VWindowSystem*)new VXWindowSystem();
@@ -33,6 +55,7 @@ _ViperExport void Destruct(VWindowSystem *pWins)
 {
 	delete (VXWindowSystem*)pWins;
 }
+*/
 
 } // extern "C"
 
@@ -52,6 +75,7 @@ VXWindowSystem::VXWindowSystem(void)
 
 VXWindowSystem::~VXWindowSystem(void)
 {
+	printf("VXWindowSystem DTOR\n");
 	if (mInitialized)
 	{
 		DestroyWindow();

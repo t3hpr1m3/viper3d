@@ -110,6 +110,19 @@ protected:
 	int				mMouseCenterY;
 };
 
+class DLL_INPCREATE
+{
+public:
+	virtual ~DLL_INPCREATE() {}
+	virtual void operator()(VInputSystem **pInput) {}
+};
+class DLL_INPDESTROY
+{
+public:
+	virtual ~DLL_INPDESTROY() {}
+	virtual void operator()(VInputSystem *pInput) {}
+};
+
 } // End Namespace
 
 #endif // __VINPUTSYSTEM_H_INCLUDED__
