@@ -43,16 +43,10 @@ Viper3D::Viper3D()
 Viper3D::~Viper3D()
 {
 	if (mInput != NULL)
-	{
-		mInput->Release();
 		delete mInput;
-	}
 
 	if (mWindow != NULL)
-	{
-		mWindow->Release();
 		delete mWindow;
-	}
 
 	if (mCamera != NULL)
 	{

@@ -280,6 +280,7 @@ void VXWindowSystem::DestroyWindow(void)
 			XF86VidModeSwitchToMode(mWin.mDpy, mWin.mScreen, &mWin.mDeskMode);
 			XF86VidModeSetViewPort(mWin.mDpy, mWin.mScreen, 0, 0);
 		}
+		XAutoRepeatOn(mWin.mDpy);
 	}
 
 	mWinCreated = false;
