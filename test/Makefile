@@ -14,7 +14,7 @@ INC_PATH	=	-I$(VIPER_PATH)base \
 				-I$(VIPER_PATH)window \
 				-I$(VIPER_PATH)interfaces
 
-CFLAGS		= -Wall -pedantic -ansi -O2
+CFLAGS		= -Wall -pedantic -ansi -O2 -DDEBUG
 
 OBJS		=	engtest2.o \
 				vectest.o \

@@ -60,7 +60,7 @@ VPolygon::~VPolygon()
 /********************************************************************
  *                        O P E R A T I O N S                       *
  ********************************************************************/
-void VPolygon::Set(const VVector *pPoints, int nNumP, const uint *pIndis,
+void VPolygon::Set(const VVector *pPoints, int nNumP, const VUINT *pIndis,
 								int nNumI)
 {
 	VVector vEdge0, vEdge1;
@@ -79,20 +79,20 @@ void VPolygon::Set(const VVector *pPoints, int nNumP, const uint *pIndis,
 	}
 
 	m_pPoints = new VVector[nNumP];
-	m_pIndis  = new uint[nNumI];
+	m_pIndis  = new VUINT[nNumI];
 
 	m_nNumP = nNumP;
 	m_nNumI = nNumI;
 
 	memcpy(m_pPoints, pPoints, sizeof(VVector)*nNumP);
-	memcpy(m_pIndis,  pIndis,  sizeof(uint)*nNumI);
+	memcpy(m_pIndis,  pIndis,  sizeof(VUINT)*nNumI);
 
 	vEdge0 = m_pPoints[m_pIndis[1]] - m_pPoints[m_pIndis[0]];
 
 	// calculate its plane
 	for (int i = 2; bGotEm == false; i++)
 	{
-		if (static_cast<uint>(i + 1) > m_nNumI)
+		if (static_cast<VUINT>(i + 1) > m_nNumI)
 			break;
 
 		vEdge1 = m_pPoints[m_pIndis[i]] - m_pPoints[m_pIndis[0]];
@@ -124,7 +124,7 @@ void VPolygon::Clip(const VPlane& plane, VPolygon *pFront, VPolygon *pBack)
 	// cast away const
 	VPlane  *pPlane = const_cast<VPlane*>(&plane);
 
-	uint	nNumFront=0,     // number points on frontside
+	VUINT	nNumFront=0,     // number points on frontside
 			nNumBack=0,      // number points on backside
 			nLoop=0,
 			nCurrent=0;
@@ -226,14 +226,14 @@ void VPolygon::Clip(const VPlane& plane, VPolygon *pFront, VPolygon *pBack)
 	//	now we have the vertices for both new polys ready.
  	//	lets take care of the index lists now
 
-	uint I0 = 0, I1 = 0, I2 = 0;
+	VUINT I0 = 0, I1 = 0, I2 = 0;
 
-	uint *pnFront = NULL;
-	uint *pnBack  = NULL;
+	VUINT *pnFront = NULL;
+	VUINT *pnBack  = NULL;
 
 	if (nNumFront > 2)
 	{
-		pnFront = new uint[(nNumFront-2)*3];
+		pnFront = new VUINT[(nNumFront-2)*3];
 
 		for (nLoop = 0; nLoop < (nNumFront-2); nLoop++)
 		{
@@ -256,7 +256,7 @@ void VPolygon::Clip(const VPlane& plane, VPolygon *pFront, VPolygon *pBack)
 
 	if (nNumBack > 2)
 	{
-		pnBack  = new uint[(nNumBack-2)*3];
+		pnBack  = new VUINT[(nNumBack-2)*3];
 
 		for (nLoop = 0; nLoop < (nNumBack-2); nLoop++)
 		{
@@ -352,7 +352,7 @@ void VPolygon::Clip(const VAabb& aabb)
 int VPolygon::Cull(const VAabb& aabb)
 {
 	VPlane	Planes[6];
-	uint	nInside=0, nCurrent=0;
+	VUINT	nInside=0, nCurrent=0;
 	bool	bFirst=true;
 	VRay	ray;
 
@@ -374,7 +374,7 @@ int VPolygon::Cull(const VAabb& aabb)
 		// one time check if all points are inside the aabb
 		if (bFirst)
 		{
-			for (uint i = 0; i < m_nNumP; i++)
+			for (VUINT i = 0; i < m_nNumP; i++)
 			{
 				if (pAabb->Intersects(m_pPoints[i]))
 					nInside++;
@@ -386,7 +386,7 @@ int VPolygon::Cull(const VAabb& aabb)
 		}
 
 		// check for intersection of poly with aabb plane
-		for (uint nLoop = 1; nLoop < (m_nNumP+1); nLoop++)
+		for (VUINT nLoop = 1; nLoop < (m_nNumP+1); nLoop++)
 		{
 			if (nLoop == m_nNumP)
 				nCurrent = 0;
@@ -413,10 +413,10 @@ int VPolygon::Cull(const VAabb& aabb)
 
 void VPolygon::SwapFaces()
 {
-	uint *pIndis = new unsigned int[m_nNumI];
+	VUINT *pIndis = new VUINT[m_nNumI];
 
 	// change index ordering
-	for (uint i = 0; i < m_nNumI; i++)
+	for (VUINT i = 0; i < m_nNumI; i++)
 		pIndis[m_nNumI - i - 1] = m_pIndis[i];
 
 	// change normal orientation
@@ -431,7 +431,7 @@ bool VPolygon::Intersects(const VRay& ray, bool bCull, float *t)
 {
 	VRay *pRay = const_cast<VRay*>(&ray);
 
-	for (uint i = 0; i < m_nNumI; i += 3)
+	for (VUINT i = 0; i < m_nNumI; i += 3)
 	{
 		if (pRay->Intersects(m_pPoints[m_pIndis[i]],
 							m_pPoints[m_pIndis[i+1]],
@@ -460,7 +460,7 @@ bool VPolygon::Intersects(const VRay& ray, bool bCull, float fL, float *t)
 {
 	VRay *pRay = const_cast<VRay*>(&ray);
 
-	for (uint i = 0; i < m_nNumI; i += 3)
+	for (VUINT i = 0; i < m_nNumI; i += 3)
 	{
 		if (pRay->Intersects(m_pPoints[m_pIndis[i]],
 							m_pPoints[m_pIndis[i+1]],
@@ -511,7 +511,7 @@ void VPolygon::CalcBoundingBox()
 	vMax = vMin = m_pPoints[0];
 
 	// seek final values for each coordinate
-	for (uint i = 0; i < m_nNumP; i++)
+	for (VUINT i = 0; i < m_nNumP; i++)
 	{
 		if (m_pPoints[i].x > vMax.x)
 			vMax.x = m_pPoints[i].x;

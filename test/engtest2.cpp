@@ -11,12 +11,13 @@ int main(int argc, char *argv[])
 {
 	Viper3D	vEngine;
 	VLog::SetName("Viper3D.log");
+	//VTRACE( "Hey\n" );
 	VLog::SetFlush();
 	VCPU::Init();
 	TestVectors();
 	TestMatrices();
 
-	if (!vEngine.Create(300, 300, false))
+	if (!vEngine.Create(800, 600, false))
 	{
 		cerr << "Unable to create engine." << endl;
 		return -1;

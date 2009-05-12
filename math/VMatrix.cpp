@@ -592,9 +592,9 @@ VMatrix VMatrix::operator*(const VMatrix& mat) const
 	}
 	else
 	{
-		for (byte i = 0; i < 4; i++)
+		for (VBYTE i = 0; i < 4; i++)
 		{
-			for (byte j = 0; j < 4; j++)
+			for (VBYTE j = 0; j < 4; j++)
 			{
 				mResult[i][j] += m[i][0] * mat[0][j];
 				mResult[i][j] += m[i][1] * mat[1][j];

@@ -192,14 +192,14 @@ bool VXWindowSystem::Initialize(void)
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-bool VXWindowSystem::CreateWindow(const uint pWidth, const uint pHeight,
+bool VXWindowSystem::CreateWindow(const VUINT pWidth, const VUINT pHeight,
 								bool pFullScreen/*=false*/)
 {
 	int					vDpyWidth, vDpyHeight;
 	int					vBestMode = 0;
 	Atom				vWMDelete;
 	Window				vWinDummy;
-	uint				vBorderDummy;
+	VUINT				vBorderDummy;
 
 	mFullScreen = pFullScreen;
 
@@ -286,7 +286,7 @@ void VXWindowSystem::DestroyWindow(void)
 	mWinCreated = false;
 }
 
-bool VXWindowSystem::Resize(const uint pWidth, const uint pHeight)
+bool VXWindowSystem::Resize(const VUINT pWidth, const VUINT pHeight)
 {
 	if (pWidth != mWidth && pHeight != mHeight)
 	{
@@ -333,7 +333,7 @@ void VXWindowSystem::SwapBuffers(void) const
 		glXSwapBuffers(mWin.mDpy, mWin.mWin);
 }
 
-bool VXWindowSystem::CaptureInput(ulong pFlags) const
+bool VXWindowSystem::CaptureInput(VULONG pFlags) const
 {
 	XSelectInput(mWin.mDpy, mWin.mWin, pFlags);
 	return true;

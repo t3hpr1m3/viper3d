@@ -14,14 +14,13 @@
 #define __VTYPES_H_INCLUDED__
 
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
-typedef unsigned __int64		ulonglong;
-#elif VIPER_PLATFORM == PLATFORM_APPLE
+#elif VIPER_PLATFORM == PLATFORM_MAC
 #elif VIPER_PLATFORM == PLATFORM_LINUX
-typedef unsigned short			ushort;
-typedef unsigned int			uint;
-typedef unsigned long			ulong;
-typedef unsigned char			byte;
 #endif
+typedef unsigned short			VUSHORT;
+typedef unsigned int			VUINT;
+typedef unsigned long			VULONG;
+typedef unsigned char			VBYTE;
 typedef float					scalar_t;
 
 namespace UDP

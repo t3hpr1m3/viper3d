@@ -82,8 +82,8 @@ private:
 	 *             VARIABLES            *
 	 *==================================*/
 	VWindowSystem			*mWindow;
-	ulong					mWidth;
-	ulong					mHeight;
+	VULONG					mWidth;
+	VULONG					mHeight;
 	bool					mWindowed;
 	bool					mRunning;
 };

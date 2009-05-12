@@ -123,7 +123,7 @@ bool VXInputSystem::IsKeyDown(VKeyCode pKc)
  *------------------------------------------------------------------*/
 bool VXInputSystem::Initialize(VWindowSystem *pWins)
 {
-	ulong vFlags = ButtonPressMask | KeyPressMask | KeyReleaseMask |
+	VULONG vFlags = ButtonPressMask | KeyPressMask | KeyReleaseMask |
 					EnterWindowMask | LeaveWindowMask;
 	mWins = pWins;
 	mWins->CaptureInput(vFlags);

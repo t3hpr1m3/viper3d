@@ -26,6 +26,8 @@
 #define VIPER_PLATFORM PLATFORM_LINUX
 #endif
 
+#include "VTypes.h"
+
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 #define _ViperExport __declspec( dllexport )
 #elif VIPER_PLATFORM == PLATFORM_APPLE

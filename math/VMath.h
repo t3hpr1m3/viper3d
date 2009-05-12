@@ -739,15 +739,15 @@ public:
 	const int		GetNumPoints() const;
 	const int		GetNumIndis() const;
 	const VVector*	GetPoints() const;
-	const uint*		GetIndices() const;
+	const VUINT*	GetIndices() const;
 	const VPlane&	GetPlane() const;
 	const VAabb&	GetAabb() const;
-	const uint		GetFlag() const;
+	const VUINT		GetFlag() const;
 
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
-	void			Set(const VVector *pPoints, int nNumP, const uint *pIndis,
+	void			Set(const VVector *pPoints, int nNumP, const VUINT *pIndis,
 								int nNumI);
 	void			Clip(const VPlane& plane, VPolygon *pFront,
 								VPolygon *pBack);
@@ -756,7 +756,7 @@ public:
 	void			SwapFaces();
 	bool			Intersects(const VRay& ray, bool bCull, float *t);
 	bool			Intersects(const VRay& ray, bool bCull, float fL, float *t);
-	void			SetFlag(uint n);
+	void			SetFlag(VUINT n);
 
 	/*==================================*
 	 *			   OPERATORS			*
@@ -779,12 +779,12 @@ private:
 	 *             VARIABLES            *
 	 *==================================*/
 	VPlane			m_Plane;	/**< plane which poly lies in */
-	uint			m_nNumP;	/**< number of points */
-	uint			m_nNumI;	/**< number of indices */
+	VUINT			m_nNumP;	/**< number of points */
+	VUINT			m_nNumI;	/**< number of indices */
 	VAabb			m_Aabb;		/**< bounding box */
-	uint			m_nFlag;	/**< user defined flag */
+	VUINT			m_nFlag;	/**< user defined flag */
 	VVector			*m_pPoints;	/**< list of points */
-	uint			*m_pIndis;	/**< index list */
+	VUINT			*m_pIndis;	/**< index list */
 };
 
 inline
@@ -806,7 +806,7 @@ const VVector* VPolygon::GetPoints() const
 }
 
 inline
-const uint* VPolygon::GetIndices() const
+const VUINT* VPolygon::GetIndices() const
 {
 	return m_pIndis;
 }
@@ -824,13 +824,13 @@ const VAabb& VPolygon::GetAabb() const
 }
 
 inline
-const uint VPolygon::GetFlag() const
+const VUINT VPolygon::GetFlag() const
 {
 	return m_nFlag;
 }
 
 inline
-void VPolygon::SetFlag(uint nFlag)
+void VPolygon::SetFlag(VUINT nFlag)
 {
 	m_nFlag = nFlag;
 }

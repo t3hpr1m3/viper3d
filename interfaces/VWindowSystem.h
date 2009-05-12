@@ -32,7 +32,7 @@ public:
 	VFont() {};
 	virtual ~VFont() {};
 
-	uint mFontID;
+	VUINT mFontID;
 };
 
 /**
@@ -79,12 +79,12 @@ public:
 	 *
 	 *	@returns	(bool) Whether or not we could create the actual window.
 	 */
-	virtual bool	CreateWindow(const uint pWidth, const uint pHeight,
+	virtual bool	CreateWindow(const VUINT pWidth, const VUINT pHeight,
 									bool pFullScreen = false) = 0;
 
 	virtual void	DestroyWindow() = 0;
 
-	virtual bool	Resize(const uint pWidth, const uint pHeight) = 0;
+	virtual bool	Resize(const VUINT pWidth, const VUINT pHeight) = 0;
 
 	virtual bool	FullScreen(bool pFullScreen) = 0;
 	/**
@@ -100,7 +100,7 @@ public:
 
 	virtual void	SwapBuffers() const = 0;
 
-	virtual bool	CaptureInput(ulong pFlags) const = 0;
+	virtual bool	CaptureInput(VULONG pFlags) const = 0;
 
 	virtual void	Update() = 0;
 
@@ -125,8 +125,8 @@ private:
 	 *             VARIABLES            *
 	 *==================================*/
 protected:
-	uint			mWidth;
-	uint			mHeight;
+	VUINT			mWidth;
+	VUINT			mHeight;
 	bool			mDblBuffered;
 	bool			mFullScreen;
 	VKeyEvents		mKeyEvents;

@@ -44,7 +44,7 @@ public:
 	virtual ~VXFont() {};
 
 	VString	mFont;
-	uint	mPitch;
+	VUINT	mPitch;
 
 	GLuint	mBase;
 	GLuint	mFirst;
@@ -61,7 +61,7 @@ typedef struct
 	XF86VidModeModeInfo		mDeskMode;
 	int						mX;
 	int						mY;
-	uint					mDepth;
+	VUINT					mDepth;
 } GLWindow;
 
 typedef map<KeySym, VKeyCode> _KeyMap;	
@@ -102,7 +102,7 @@ public:
 	 *
 	 *	@returns	(bool) Whether or not we could create the actual window.
 	 */
-	bool			CreateWindow(const uint pWidth, const uint pHeight,
+	bool			CreateWindow(const VUINT pWidth, const VUINT pHeight,
 									bool pFullScreen = false);
 	/**
 	 *	@brief		Closes the currently active window.
@@ -122,7 +122,7 @@ public:
 	 *
 	 *	@returns	(bool) Whether or not we could create the new window.
 	 */
-	bool			Resize(const uint pWidth, const uint pHeight);
+	bool			Resize(const VUINT pWidth, const VUINT pHeight);
 	/**
 	 *	@brief		Switches between windowed and fullscreen mode.
 	 *	@author		Josh Williams
@@ -144,7 +144,7 @@ public:
 	 */
 	void			SetCaption(const char *pCaption) const;
 	void			SwapBuffers(void) const;
-	bool			CaptureInput(ulong pFlags) const;
+	bool			CaptureInput(VULONG pFlags) const;
 	void			Update(void);
 	VKeyEvent*		GetEvent(void);
 
