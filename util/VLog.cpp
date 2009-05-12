@@ -33,7 +33,7 @@ bool		VLog::mFlush = false;
  ********************************************************************/
 VLog::VLog()
 {
-	mFlush = false;
+
 }
 
 VLog::~VLog()
