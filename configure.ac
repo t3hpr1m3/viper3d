@@ -1,7 +1,7 @@
 AC_PREREQ([2.63])
 AC_INIT([viper3d], [0.1.0], [vmizzle@gmail.com-REPORT-ADDRESS])
 AM_INIT_AUTOMAKE
-AC_CONFIG_SRCDIR([viper3d/Renderer.h])
+AC_CONFIG_SRCDIR([viper3d/RenderSystem.h])
 AC_CONFIG_HEADERS([config.h])
 
 # Checks for programs.
