@@ -10,10 +10,11 @@
  * -----------  ----------------------------------------------	------------- *
  *                                                                            *
  *============================================================================*/
-#include "VMath.h"
+#include <viper3d/Math.h>
 
 /* System Headers */
 #include <cmath>
+#include <iostream>
 
 /* Local Headers */
 
@@ -23,7 +24,7 @@ namespace UDP
 /********************************************************************
  *          C O N S T R U C T I O N / D E S T R U C T I O N         *
  ********************************************************************/
-VQuaternion::VQuaternion(float _x, float _y, float _z, float _w)
+VQuaternion::VQuaternion(float _w, float _x, float _y, float _z)
  : x(_x), y(_y), z(_z), w(_w)
 {
 
@@ -35,6 +36,14 @@ VQuaternion::VQuaternion(const VQuaternion& q)
 	y = q.y;
 	z = q.z;
 	w = q.w;
+}
+
+VQuaternion::VQuaternion(const VVector& v, const float& r)
+{
+	x = v.x;
+	y = v.y;
+	z = v.z;
+	w = r;
 }
 
 /********************************************************************
@@ -198,15 +207,16 @@ void VQuaternion::ToRotationMatrix(VMatrix& rot) const
 
 	rot = VMatrix::MATRIX_IDENTITY;
 
-	rot[0][0] = 1.0f - (fTyy + fTzz);
+	rot[0][0] = 1.0f - fTyy - fTzz;
 	rot[0][1] = fTxy - fTwz;
 	rot[0][2] = fTxz + fTwy;
 	rot[1][0] = fTxy + fTwz;
-	rot[1][1] = 1.0f - (fTxx + fTzz);
+	rot[1][1] = 1.0f - fTxx - fTzz;
 	rot[1][2] = fTyz - fTwx;
 	rot[2][0] = fTxz - fTwy;
 	rot[2][1] = fTyz + fTwx;
-	rot[2][2] = 1.0f - (fTxx + fTyy);
+	rot[2][2] = 1.0f - fTxx - fTyy;
+
 }
 
 /*------------------------------------------------------------------*
@@ -619,7 +629,7 @@ VQuaternion VQuaternion::operator*(const VVector &vec) const
 VVector VQuaternion::operator*(const VVector &pVec) const
 {
 	VVector	vUv, vUUv;
-	VVector	vQVec(x, y, z);
+	VVector	vQVec(x, y, z, w);
 	vUv = vQVec.CrossProduct(pVec);
 	vUUv = vQVec.CrossProduct(vUv);
 	vUv *= (2.0f * w);

@@ -10,7 +10,7 @@
  * -----------  ----------------------------------------------	------------- *
  *                                                                            *
  *============================================================================*/
-#include "VMath.h"
+#include <viper3d/Math.h>
 
 /* System Headers */
 #include <cmath>
@@ -25,7 +25,7 @@ const float 	VMath::TWO_PI = float(2.0 * PI);
 const float 	VMath::HALF_PI = float(0.5 * PI);
 
 const VQuaternion VMath::QUATERNION_ZERO(0.0f, 0.0f, 0.0f, 0.0f);
-const VQuaternion VMath::QUATERNION_IDENTITY(0.0f, 0.0f, 0.0f, 1.0f);
+const VQuaternion VMath::QUATERNION_IDENTITY(1.0f, 0.0f, 0.0f, 0.0f);
 
 /********************************************************************
  *          C O N S T R U C T I O N / D E S T R U C T I O N         *

@@ -10,12 +10,12 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#if !defined(__VRENDERABLE_H_INCLUDED__)
-#define __VRENDERABLE_H_INCLUDED__
+#if !defined(__RENDERABLE_H_INCLUDED__)
+#define __RENDERABLE_H_INCLUDED__
 
-#include "VGlobals.h"
-#include "VTypes.h"
-#include "VMath.h"
+#include <viper3d/Globals.h>
+#include <viper3d/Types.h>
+#include <viper3d/Math.h>
 
 namespace UDP
 {
@@ -65,15 +65,6 @@ public:
 	 */
 	VRenderMethod	GetRenderMethod() { return mRenderMethod; }
 	/**
-	 *	@brief		Returns the local coordinate position of this object.
-	 *	@author		Josh Williams
-	 *	@date		09-Sep-2003
-	 *
-	 *	@returns	(VVector) Position of this object relative to its
-	 *				parent.
-	 */
-	VVector			GetPosition() { return mPosition; }
-	/**
 	 *	@brief		Returns the size specified for this object (bounding box)
 	 *	@author		Josh Williams
 	 *	@date		09-Sep-2003
@@ -101,21 +92,6 @@ public:
 	virtual void	Render()
 	{
 		OnRender();
-	}
-	/**
-	 *	@brief		Sets this object's position relative to it's parent.
-	 *	@author		Josh Williams
-	 *	@date		09-Sep-2003
-	 *
-	 *	@param		pNewPosition	Vectory specifying this object's position in space.
-	 *
-	 *	@returns	(VVector) The object's original position.
-	 */
-	VVector			SetPosition(VVector pNewPosition)
-	{
-		VVector vOld = mPosition;
-		mPosition = pNewPosition;
-		return vOld;
 	}
 	/**
 	 *	@brief		Sets the size for this object (bounding box)
@@ -173,7 +149,6 @@ private:
 	 *			   VARIABLES			*
 	 *==================================*/
 protected:
-	VVector			mPosition;		/**< This object's position within the world. */
 	scalar_t		mSize;			/**< Size of this object relative to the world. */
 	VRenderMethod	mRenderMethod;	/**< Method to use when rendering this object. */
 
@@ -184,4 +159,4 @@ protected:
 
 } // End Namespace
 
-#endif // __VRENDERABLE_H_INCLUDED__
+#endif // __RENDERABLE_H_INCLUDED__

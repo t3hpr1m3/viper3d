@@ -10,19 +10,35 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#if !defined(__VINPUT_H_INCLUDED__)
-#define __VINPUT_H_INCLUDED__
+#if !defined(__INPUT_H_INCLUDED__)
+#define __INPUT_H_INCLUDED__
 
 /* System Headers */
+#include <viper3d/Viper3D.h>
+#include <map>
 
 /* Local Headers */
-#include "VDynamicLib.h"
-#include "VInputSystem.h"
 
 namespace UDP
 {
-typedef void (*DLL_INPCREATE2)(VInputSystem **pInput);
-typedef void (*DLL_INPDESTROY2)(VInputSystem *pInput);
+
+class VWindow;
+
+class VMouseState
+{
+public:
+	long mXabs, mYabs;
+	long mXrel, mYrel;
+	long mXdelta, mYdelta;
+
+	long mButtons;
+	inline long IsButtonDown(unsigned char pButton) const
+	{
+		return mButtons & (1 << pButton);
+	}
+};
+
+typedef std::map<VKeyCode, bool> VKeyStates;
 
 /**
  *	@class		VInput
@@ -44,13 +60,16 @@ public:
 	/*==================================*
 	 *			  ATTRIBUTES			*
 	 *==================================*/
+	virtual bool	IsKeyDown(VKeyCode pKc);
+	virtual const VMouseState&	GetMouseState(void);
 
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
-	bool			CreateDevice(char *pAPI);
-	void			Release(void);
-	VInputSystem*	GetDevice(void);
+	virtual bool	StartCapture(VWindow *pWin) = 0;
+	virtual bool	EndCapture(void) = 0;
+
+	virtual bool	Update(void) = 0;
 
 protected:
 	/*==================================*
@@ -63,18 +82,33 @@ private:
 	 *==================================*/
 
 
-private:
+protected:
 	/*==================================*
 	 *             VARIABLES            *
 	 *==================================*/
-	VDynamicLib		mInputLib;		/**< Dynamic library object	*/			
-	VInputSystem	*mDevice;		/**< Actual InputSystem pointer	*/
-	DLL_INPCREATE	*mCreate;		/**< Pointer to creation function */
-	DLL_INPDESTROY	*mDestroy;		/**< Pointer to deletion function */
+	VWindow			*mWin;			/**< Window handle */
+	VKeyStates		mKeyStates;
+	VMouseState		mMouseState;
 
 };
 
+inline
+bool VInput::IsKeyDown(VKeyCode pKc)
+{
+	VKeyStates::iterator	vIt;
+	if ((vIt = mKeyStates.find(pKc)) == mKeyStates.end())
+		return false;
+	else
+		return vIt->second;
+}
+
+inline
+const VMouseState& VInput::GetMouseState(void)
+{
+	return mMouseState;
+}
+
 } // End Namespace
 
-#endif // __VINPUT_H_INCLUDED__
+#endif // __INPUT_H_INCLUDED__
 

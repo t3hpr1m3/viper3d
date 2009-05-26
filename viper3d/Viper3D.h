@@ -16,14 +16,15 @@
 /* System Headers */
 
 /* Local Headers */
-#include "VInput.h"
-#include "VWindow.h"
-#include "VCamera.h"
+#include <viper3d/Globals.h>
+#include <viper3d/util/DynamicLib.h>
 
 /* Macros */
 
 namespace UDP
 {
+
+class VRenderSystem;
 
 /**
  *  @class     	Viper3D
@@ -50,8 +51,12 @@ public:
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
+	VRenderSystem*		CreateRenderer(char *pAPI);
+	void				DestroyRenderer();
+	 /*
 	bool				Create(int pWidth = 800, int pHeight = 600, bool pFullScreen = false);
 	void				MainLoop();
+	*/
 
 public:
 	/*==================================*
@@ -67,16 +72,22 @@ private:
 	/*==================================*
 	 *			   INTERNALS			*
 	 *==================================*/
+	 /*
 	VCamera*			CreateCamera(const VVector &pPos = VVector::VECTOR_ZERO,
 										const VVector &pDir = VVector::VECTOR_UNIT_Z);
+	*/
 
 private:
 	/*==================================*
 	 *             VARIABLES            *
 	 *==================================*/
+	VDynamicLib			mRenderLib;
+	VRenderSystem		*mRenderer;
+	 /*
 	VInput				*mInput;
 	VWindow				*mWindow;
 	VCamera				*mCamera;
+	*/
 };
 
 

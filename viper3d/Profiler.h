@@ -10,8 +10,8 @@
  * -----------  ----------------------------------------------	------------- *
  *                                                                            *
  *============================================================================*/
-#if !defined(__VPROFILER_H_INCLUDED__)
-#define __VPROFILER_H_INCLUDED__
+#if !defined(__PROFILER_H_INCLUDED__)
+#define __PROFILER_H_INCLUDED__
 
 #ifdef PROFILER
 #include <string>
@@ -82,4 +82,4 @@ protected:
 #define PROFILE_OUTPUT()
 #endif
 
-#endif // __VPROFILER_H_INCLUDED__
+#endif // __PROFILER_H_INCLUDED__

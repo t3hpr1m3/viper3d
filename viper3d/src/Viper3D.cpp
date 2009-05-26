@@ -10,15 +10,16 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#include "Viper3D.h"
+#include <viper3d/Viper3D.h>
 
 /* System Headers */
 #include <sys/time.h>
 #include <GL/gl.h>
 
 /* Local Headers */
-#include "VLog.h"
-#include "VProfiler.h"
+#include <viper3d/util/Log.h>
+#include <viper3d/Profiler.h>
+#include <viper3d/RenderSystem.h>
 
 /* Macros */
 
@@ -35,13 +36,16 @@ static char __CLASS__[] = "[   Viper3D    ]";
  ********************************************************************/
 Viper3D::Viper3D()
 {
+	/*
 	mInput = NULL;
 	mWindow = NULL;
 	mCamera = NULL;
+	*/
 }
 
 Viper3D::~Viper3D()
 {
+	/*
 	if (mInput != NULL)
 		delete mInput;
 
@@ -52,6 +56,7 @@ Viper3D::~Viper3D()
 	{
 		delete mCamera;
 	}
+	*/
 }
 
 /********************************************************************
@@ -65,6 +70,56 @@ Viper3D::~Viper3D()
  *                        O P E R A T I O N S                       *
  *																	*
  ********************************************************************/
+VRenderSystem* Viper3D::CreateRenderer(char *pAPI)
+{
+	DLL_RENDERCREATE *vCreate;
+	if (strcmp(pAPI, "GL") == 0)
+	{
+		VTRACE(_CL("Loading GL renderer"));
+		if (!mRenderLib.Load("./viper3d/render/opengl/.libs", "viper3dogl"))
+		{
+			VTRACE(_CL("Unable to load window library\n"));
+			return NULL;
+		}
+		VTRACE(_CL("Library loaded successfully\n"));
+
+		/* obtain pointer to the creation function */
+		vCreate = static_cast<DLL_RENDERCREATE*>(mRenderLib.GetSymbol("Construct"));
+		if (vCreate == NULL)
+		{
+			VTRACE(_CL("Unable to locate constructor.\n"));
+			return NULL;
+		}
+
+		/* try and create the WindowSystem */
+		(*vCreate)(&mRenderer);
+		if (mRenderer == NULL)
+		{
+			VTRACE(_CL("Unable to create the render device.\n"));
+			return NULL;
+		}
+
+		return mRenderer;
+	}
+
+	return NULL;
+}
+
+void Viper3D::DestroyRenderer(void)
+{
+	DLL_RENDERDESTROY *vDestroy;
+
+	vDestroy = static_cast<DLL_RENDERDESTROY*>(mRenderLib.GetSymbol("Destruct"));
+	if (vDestroy == NULL)
+	{
+		VTRACE(_CL("Unable to locate destructor.\n"));
+		return;
+	}
+
+	(*vDestroy)(mRenderer);
+}
+
+#if 1 == 2
 bool Viper3D::Create(int pWidth/*=800*/, int pHeight/*=600*/, bool pFullScreen/*=false*/)
 {
 	mWindow = new VWindow();
@@ -193,6 +248,7 @@ void Viper3D::MainLoop()
 	}
 	PROFILE_OUTPUT();
 }
+#endif
 
 
 /********************************************************************
@@ -212,6 +268,7 @@ void Viper3D::MainLoop()
  *                          I N T E R N A L S                       *
  *																	*
  ********************************************************************/
+#if 1 == 2
 VCamera* Viper3D::CreateCamera(const VVector &pPos /*=VVector::VECTOR_ZERO*/,
 								const VVector &pDir /*-VVector::VECTOR_UNIT_Z*/)
 {
@@ -220,6 +277,7 @@ VCamera* Viper3D::CreateCamera(const VVector &pPos /*=VVector::VECTOR_ZERO*/,
 	mCamera->SetDirection(pDir);
 	return mCamera;
 }
+#endif
 
 } // End Namespace
 

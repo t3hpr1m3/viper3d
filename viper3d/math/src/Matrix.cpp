@@ -10,13 +10,14 @@
  * -----------  ----------------------------------------------	------------- *
  *                                                                            *
  *============================================================================*/
-#include "VMath.h"
+#include <viper3d/Math.h>
 
 /* System Headers */
 
 /* Local Headers */
-#include "VCPU.h"
-#include "VTypes.h"
+#include <viper3d/util/CPU.h>
+#include <viper3d/Types.h>
+#include <viper3d/Camera.h>
 
 namespace UDP
 {
@@ -200,9 +201,15 @@ void VMatrix::SetTranslation(const VVector& vec, bool EraseContent /*=false*/)
 	if (EraseContent)
 		*this = VMatrix::MATRIX_IDENTITY;
 
+	m[0][3] = vec.x;
+	m[1][3] = vec.y;
+	m[2][3] = vec.z;
+
+	/*
 	m[3][0] = vec.x;
 	m[3][1] = vec.y;
 	m[3][2] = vec.z;
+	*/
 }
 
 VVector VMatrix::GetTranslation()
@@ -279,9 +286,9 @@ VMatrix VMatrix::Transpose() const
 {
 	VMatrix vTranspose;
 
-	for (int vRow = 0; vRow < 3; vRow++)
+	for (int vRow = 0; vRow < 4; vRow++)
 	{
-		for (int vCol = 0; vCol < 3; vCol++)
+		for (int vCol = 0; vCol < 4; vCol++)
 			vTranspose[vRow][vCol] = m[vCol][vRow];
 	}
 
@@ -610,14 +617,16 @@ VVector VMatrix::operator*(const VVector& vec) const
 {
 	VVector vResult;
 
-	vResult.x = vec.x * m[0][0] + vec.y * m[1][0] + vec.z * m[2][0] + m[3][0];
-	vResult.y = vec.x * m[0][1] + vec.y * m[1][1] + vec.z * m[2][1] + m[3][1];
-	vResult.z = vec.x * m[0][2] + vec.y * m[1][2] + vec.z * m[2][2] + m[3][2];
-	vResult.w = vec.x * m[0][3] + vec.y * m[1][3] + vec.z * m[2][3] + m[3][3];
-
-	vResult.x = vResult.x / vResult.w;
-	vResult.y = vResult.y / vResult.w;
-	vResult.z = vResult.z / vResult.w;
+	/*
+	vResult.w = 1.0f / (vec.x * m[3][0] + vec.y * m[3][1] + vec.z * m[3][2] + m[3][3]);
+	vResult.x = (vec.x * m[0][0] + vec.y * m[0][1] + vec.z * m[0][2] + m[0][3]) * vResult.w;
+	vResult.y = (vec.x * m[1][0] + vec.y * m[1][1] + vec.z * m[1][2] + m[1][3]) * vResult.w;
+	vResult.z = (vec.x * m[2][0] + vec.y * m[2][1] + vec.z * m[2][2] + m[2][3]) * vResult.w;
+	vResult.w = 1.0f;
+	*/
+	vResult.x = (vec.x * m[0][0] + vec.y * m[0][1] + vec.z * m[0][2]);
+	vResult.y = (vec.x * m[1][0] + vec.y * m[1][1] + vec.z * m[1][2]);
+	vResult.z = (vec.x * m[2][0] + vec.y * m[2][1] + vec.z * m[2][2]);
 	vResult.w = 1.0f;
 
 	return vResult;
@@ -661,9 +670,9 @@ VMatrix VMatrix::operator-() const
 {
 	VMatrix	vNeg;
 
-	for (int vRow = 0; vRow < 3; vRow++)
+	for (int vRow = 0; vRow < 4; vRow++)
 	{
-		for (int vCol = 0; vCol < 3; vCol++)
+		for (int vCol = 0; vCol < 4; vCol++)
 			vNeg[vRow][vCol] = -m[vRow][vCol];
 	}
 
@@ -694,9 +703,12 @@ VMatrix VMatrix::operator-() const
  *------------------------------------------------------------------*/
 void VMatrix::MakeGLMatrix(float gl_matrix[16])
 {
-	for (int i = 0; i < 16; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		gl_matrix[i]  =_m[i];
+		for (int j = 0; j < 4; j++)
+		{
+			gl_matrix[(4*i)+j] = m[j][i];
+		}
 	}
 }
 

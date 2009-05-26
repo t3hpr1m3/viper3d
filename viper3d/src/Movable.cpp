@@ -10,12 +10,12 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#include "VMovable.h"
+#include <viper3d/Movable.h>
 
 /* System Headers */
 
 /* Local Headers */
-#include "VCamera.h"
+#include <viper3d/util/Log.h>
 
 namespace UDP
 {
@@ -23,56 +23,86 @@ namespace UDP
 /********************************************************************
  *          C O N S T R U C T I O N / D E S T R U C T I O N         *
  ********************************************************************/
+VMovable::VMovable()
+{
+	SetPosition(VVector(0.0f, 0.0f, 0.0f, 1.0f));
+	mUpdateView = true;
+	mOrientation = VMath::QUATERNION_IDENTITY;
+}
 
 /********************************************************************
  *                        A T T R I B U T E S                       *
  ********************************************************************/
+
+/*------------------------------------------------------------------*
+ *							GetPosition()							*
+ *------------------------------------------------------------------*/
+/**
+ *	@brief		Returns the local coordinate position of this object.
+ *	@author		Josh Williams
+ *	@date		09-Sep-2003
+ *
+ *	@returns	(VVector) Position of this object relative to its
+ *				parent.
+ */
+/*------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+const VVector& VMovable::GetPosition() const
+{
+	return mPosition;
+}
+
+/*------------------------------------------------------------------*
+ *							GetDirection()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+VVector VMovable::GetDirection() const
+{
+	return mOrientation * -VVector::VECTOR_UNIT_Z;
+}
 
 /********************************************************************
  *                        O P E R A T I O N S                       *
  ********************************************************************/
 
 /*------------------------------------------------------------------*
- *								Prepare()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *		Call OnPrepare() for this object							*
- *		If this object has children									*
- *			prepare them											*
- *		If this object has siblings									*
- *			prepare them as well									*
- *																	*
- *------------------------------------------------------------------*
+ *							SetPosition()							*
+ *------------------------------------------------------------------*/
+/**
+ *	@brief		Sets this object's position relative to its parent.
+ *	@author		Josh Williams
+ *	@date		09-Sep-2003
+ *
+ *	@returns	(VVector) The object's original position.
+ */
+/*------------------------------------------------------------------*
  * MODIFICATIONS													*
  *	Date		Description							Author			*
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-void VMovable::Prepare()
+VVector VMovable::SetPosition(const VVector& pNewPosition)
 {
-	OnPrepare();
-
-	if (HasChild())
-		((VMovable*)GetChild())->Prepare();
-
-	if (HasParent() && !IsLastChild())
-		((VMovable*)GetNext())->Prepare();
+	VVector vOld = mPosition;
+	mPosition = pNewPosition;
+	return vOld;
 }
 
 /*------------------------------------------------------------------*
- *						   CheckCollisions()						*
+ *								LookAt()							*
  *------------------------------------------------------------------*
  *	ALGORITHM:														*
- *		If our bounding box intersects another						*
- *			sound collision											*
- *			If we have children										*
- *				check them for collisions with this object as well	*
- *			If we have siblings										*
- *				check them for collisions							*
- *		If the supplied object has children							*
- *			check for collisions with it's children					*
- *		If the supplied object has siblings							*
- *			check for collisions with it's siblings					*
  *																	*
  *------------------------------------------------------------------*
  * MODIFICATIONS													*
@@ -80,49 +110,101 @@ void VMovable::Prepare()
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-void VMovable::CheckCollisions(VMovable *pObj)
+void VMovable::LookAt(VMovable *pObject)
 {
-	/*
-	 * If this object's bounding sphere collides with obj's sphere
-	 * and the 2 objects aren't the same object
-	 */
-	if (((pObj->GetPosition() - GetPosition()).Length() <= (pObj->GetSize() + GetSize())) &&
-		 (pObj != ((VMovable*)this)))
+	this->SetDirection(pObject->GetPosition() - GetPosition());
+}
+
+/*------------------------------------------------------------------*
+ *							    LookAt()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::LookAt(const VVector& pVector)
+{
+	this->SetDirection(pVector - GetPosition());
+}
+
+/*------------------------------------------------------------------*
+ *								LookAt()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::LookAt(scalar_t pX, scalar_t pY, scalar_t pZ)
+{
+	VVector vTemp(pX, pY, pZ);
+	this->LookAt(vTemp);
+}
+
+/*------------------------------------------------------------------*
+ *							 SetDirection()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *		If a zero vector was passed in								*
+ *			bail (nothing to do)									*
+ *		Normalize the inverse vector								*
+ *		If the inverse is equal to our current inverse vector		*
+ *			Use yaw rotation										*
+ *		Else														*
+ *			Find the shortest arc									*
+ *		Update our orientation										*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::SetDirection(const VVector& pVec)
+{
+	if (pVec == VVector::VECTOR_ZERO)
+		return;
+
+	VVector vZAdjustVec = -pVec;
+	vZAdjustVec.Normalize();
+
+	VVector vAxes[3];
+	mOrientation.ToAxes(vAxes);
+
+	VQuaternion vRotQuat;
+
+	if (-vZAdjustVec == vAxes[2])
 	{
-		OnCollision(pObj);	// Sound collision.  This object should have
-							// overridden OnCollision();
-
-		// Test children now
-		if (HasChild())
-			((VMovable*)GetChild())->CheckCollisions(pObj);
-
-		// Now, siblings
-		if (HasParent() && !IsLastChild())
-			((VMovable*)GetNext())->CheckCollisions(pObj);
+		/*
+		 * 180 degree turn (infinite possible rotation axes)
+		 * Default to yaw ie. use current UP
+		 */
+		vRotQuat.FromAngleAxis(VMath::PI, vAxes[1]);
+	}
+	else
+	{
+		/*
+		 * Derive shortest arc to new direction.
+		 */
+		vRotQuat = vAxes[2].GetRotationTo(vZAdjustVec);
 	}
 
-	/*
-	 * We've performed all checks against this object.  Now, test against
-	 * it's children and siblings
-	 */
-	if (pObj->HasChild())
-		CheckCollisions((VMovable*)(pObj->GetChild()));
-	
-	if (pObj->HasParent() && !pObj->IsLastChild())
-		CheckCollisions((VMovable*)(pObj->GetNext()));
+	mOrientation = vRotQuat * mOrientation;
+
+	mUpdateView = true;
 }
 
 /*------------------------------------------------------------------*
- *								Animate()							*
+ *								 Move()								*
  *------------------------------------------------------------------*
  *	ALGORITHM:														*
- *		Perform animation calculations								*
- *		If we have children											*
- *			Animate them											*
- *		If we have siblings											*
- *			animate them as well									*
- *		If we have been flagged for deletion						*
- *			clean up												*
  *																	*
  *------------------------------------------------------------------*
  * MODIFICATIONS													*
@@ -130,58 +212,173 @@ void VMovable::CheckCollisions(VMovable *pObj)
  * ===========	==================================	===============	*
  *																	*
  *------------------------------------------------------------------*/
-void VMovable::Animate(scalar_t pDeltaTime)
+void VMovable::Move(const VVector& pVector)
 {
-	OnAnimate(pDeltaTime); // This object
-
-	// Animate children, if any
-	if (HasChild())
-		((VMovable*)GetChild())->Animate(pDeltaTime);
-
-	// Now do the siblings
-	if (HasParent() && !IsLastChild())
-		((VMovable*)GetNext())->Animate(pDeltaTime);
-
-	if (mDelete) // Cleanup of this object needs to be performed
-		delete this;		
+	SetPosition(GetPosition() + pVector);
+	mUpdateView = true;
 }
+
+/*------------------------------------------------------------------*
+ *							MoveRelative()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::MoveRelative(const VVector& pVec)
+{
+	// Transform the axes of the relative vector by camera's local axes
+	VVector vTrans = mOrientation * pVec;
+
+	SetPosition(GetPosition() + vTrans);
+	mUpdateView = true;
+}
+
+/*------------------------------------------------------------------*
+ *								MoveTo()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::MoveTo(VMovable *pObject)
+{
+	SetPosition(pObject->GetPosition());
+	mUpdateView = true;
+}
+
+/*------------------------------------------------------------------*
+ *								MoveTo()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::MoveTo(const VVector& pVec)
+{
+	SetPosition(pVec);
+	mUpdateView = true;
+}
+
+/*------------------------------------------------------------------*
+ *								MoveTo()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::MoveTo(scalar_t pX, scalar_t pY, scalar_t pZ)
+{
+	SetPosition(VVector(pX, pY, pZ));
+	mUpdateView = true;
+}
+
+/*------------------------------------------------------------------*
+ *							 RotateYaw()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::RotateYaw(scalar_t pDegrees)
+{
+	VVector vYAxis = mOrientation * VVector::VECTOR_UNIT_Y;
+	Rotate(vYAxis, pDegrees);
+}
+
+/*------------------------------------------------------------------*
+ *							RotatePitch()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::RotatePitch(scalar_t pDegrees)
+{
+	VVector vXAxis = mOrientation * VVector::VECTOR_UNIT_X;
+	Rotate(vXAxis, pDegrees);
+}
+
+/*------------------------------------------------------------------*
+ *							RotateRoll()							*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::RotateRoll(scalar_t pDegrees)
+{
+	VVector vZAxis = mOrientation * VVector::VECTOR_UNIT_Z;
+	Rotate(vZAxis, pDegrees);
+}
+
+/*------------------------------------------------------------------*
+ *							  Rotate()								*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::Rotate(const VVector& pAxis, scalar_t pDegrees)
+{
+	VQuaternion vQ;
+	vQ.FromAngleAxis(VMath::DegToRad(pDegrees), pAxis);
+	Rotate(vQ);
+}
+
+/*------------------------------------------------------------------*
+ *							  Rotate()								*
+ *------------------------------------------------------------------*
+ *	ALGORITHM:														*
+ *																	*
+ *------------------------------------------------------------------*
+ * MODIFICATIONS													*
+ *	Date		Description							Author			*
+ * ===========	==================================	===============	*
+ *																	*
+ *------------------------------------------------------------------*/
+void VMovable::Rotate(const VQuaternion& pQ)
+{
+	mOrientation = pQ * mOrientation;
+	mUpdateView = true;
+}
+
 
 /********************************************************************
  *                         C A L L B A C K S                        *
  ********************************************************************/
-
-/*------------------------------------------------------------------*
- *							  OnPrepare()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VMovable::OnPrepare()
-{
-	CheckCollisions((VMovable*)FindRoot());
-}
-
-/*------------------------------------------------------------------*
- *							 OnAnimate()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VMovable::OnAnimate(scalar_t pDeltaTime)
-{
-	SetPosition(GetPosition() + GetVelocity() * pDeltaTime);
-	SetVelocity(GetVelocity() + GetAcceleration() * pDeltaTime);
-}
 
 /********************************************************************
  *                         I N T E R N A L S                        *

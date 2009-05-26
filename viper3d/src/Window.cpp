@@ -10,12 +10,12 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#include "VWindow.h"
+#include <viper3d/Window.h>
 
 /* System Headers */
 
 /* Local Headers */
-#include "VLog.h"
+#include <viper3d/RenderSystem.h>
 
 namespace UDP
 {
@@ -25,136 +25,31 @@ static char __CLASS__[] = "[   VWindow    ]";
 /********************************************************************
  *          C O N S T R U C T I O N / D E S T R U C T I O N         *
  ********************************************************************/
-VWindow::VWindow(void)
+VWindow::VWindow()
+#if VIPER_PLATFORM == PLATFORM_WINDOWS
+	: mWin(NULL)
+#elif VIPER_PLATFORM == PLATFORM_MAC
+#elif VIPER_PLATFORM == PLATFORM_LINUX
+	: mDpy(NULL), mScreen(0), mWin(-1)
+#endif
 {
-	mDevice = NULL;
+	mOpts.mFullScreen	= false;
+	mOpts.mWidth		= 0;
+	mOpts.mHeight		= 0;
 }
 
 VWindow::~VWindow(void)
 {
-	if (mDevice != NULL)
-		Release();
 }
 
 /********************************************************************
  *                        A T T R I B U T E S                       *
  ********************************************************************/
 
-/*------------------------------------------------------------------*
- *							  GetDevice()							*
- *------------------------------------------------------------------*/
-/**	@brief		Returns a handle to the underlying VWindowSystem.
- *	@author		Josh Williams
- *	@date		01-Sep-2004
- *
- *	@remarks	Pointer returned can be used to perform window
- *				operations (resizine, fullscreen, etc).
- */
-/*------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-VWindowSystem* VWindow::GetDevice(void)
-{
-	return mDevice;
-}
-
 /********************************************************************
  *                        O P E R A T I O N S                       *
  ********************************************************************/
 
-/*------------------------------------------------------------------*
- *							CreateDevice()							*
- *------------------------------------------------------------------*/
-/**	@brief		Creates the specified VWindowSystem.
- *	@author		Josh Williams
- *	@date		01-Sep-2004
- *
- *	@param		pAPI	Desired window system (X, Win32, etc)
- *
- *	@returns	Success/failure
- *
- *	@remarks	Loads the necessary library into memory and obtains
- *				pointers to the creation and deletion functions.
- *				If successful, function tries to create the specific
- *				VWindowSystem object.
- */
-/*------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-bool VWindow::CreateDevice(char *pAPI)
-{
-	if (strcmp(pAPI, "X") == 0)
-	{
-		/* try to load the X window library */
-		VTRACE(_CL("Loading X window system library\n"));
-		if (!mWindowLib.Load("./libs", "VXWindow"))
-		{
-			VTRACE(_CL("Unable to load window library\n"));
-			return false;
-		}
-		VTRACE(_CL("Library loaded successfully\n"));
-
-		/* obtain pointer to the creation function */
-		mCreate = static_cast<DLL_WINCREATE*>(mWindowLib.GetSymbol("Construct"));
-		if (mCreate == NULL)
-		{
-			VTRACE(_CL("Unable to locate constructor.\n"));
-			return false;
-		}
-
-		/* obtain pointer to the deletion function */
-		mDestroy = static_cast<DLL_WINDESTROY*>(mWindowLib.GetSymbol("Destruct"));
-		if (mDestroy == NULL)
-		{
-			VTRACE(_CL("Unable to locate cleanup function.\n"));
-			return false;
-		}
-
-		/* try and create the WindowSystem */
-		(*mCreate)(&mDevice);
-		if (mDevice == NULL)
-		{
-			VTRACE(_CL("Unable to create window device.\n"));
-			return false;
-		}
-	}
-	else
-	{
-		VTRACE(_CL("Unknown window system requested\n"));
-		return false;
-	}
-
-	return true;
-}
-
-/*------------------------------------------------------------------*
- *								Release()							*
- *------------------------------------------------------------------*/
-/**	@brief		Calls the destructor for the current VWindowSystem.
- *	@author		Josh Williams
- *	@date		01-Sep-2004
- *
- *	@remarks	Does not unload the underlying dynamic library from
- *				memory.
- */
-/*------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VWindow::Release(void)
-{
-	VTRACE(_CL("Releasing device...\n"));
-	(*mDestroy)(mDevice);
-	mDevice = NULL;
-}
 /********************************************************************
  *                         C A L L B A C K S                        *
  ********************************************************************/

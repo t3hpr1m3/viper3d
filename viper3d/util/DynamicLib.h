@@ -16,8 +16,8 @@
 /* System Headers */
 
 /* Local Headers */
-#include "VGlobals.h"
-#include "VString.h"
+#include <viper3d/Globals.h>
+#include <viper3d/util/String.h>
 
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN

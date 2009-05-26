@@ -13,20 +13,28 @@
 #if !defined(__VLOG_H_INCLUDED__)
 #define __VLOG_H_INCLUDED__
 
+#ifdef HAVE_CONFIG_H
+#include <config.h>
+#endif /* HAVE_CONFIG_H */
+
 /* System Headers */
 #include <cstdarg>
+#include <iostream>
 #include <fstream>
 
 /* Local Headers */
 
 using std::ofstream;
 using std::ios_base;
+using std::cout;
+using std::endl;
 
 #define _CL( a ) "%s "a, __CLASS__
-#ifdef DEBUG
+#ifdef TRACE_ENABLE
+#define VTRACES VLog::Get() 
 #define VTRACE VLog::Get().Write
 #else
-#define VTRACE (void)0
+#define VTRACE 1 ? (void)0 : (void)
 #endif
 
 namespace UDP
@@ -53,6 +61,10 @@ protected:
 	 *			  ATTRIBUTES			*
 	 *==================================*/
 public:
+	typedef enum
+	{
+		NEWLINE
+	} Endline;
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
@@ -60,6 +72,19 @@ public:
 	static void		SetFlush(bool pFlush = true);
 	static VLog&	Get();
 	void			Write(const char *pText, ...) const;
+	VLog&			operator<<(Endline pEndline)
+	{
+		mLogFile << std::endl;
+		cout << std::endl;
+	}
+
+	template <typename T>
+	VLog&			operator<<(const T &pObj)
+	{
+		mLogFile << pObj;
+		std::cout << pObj;
+		return *this;
+	}
 protected:
 	/*==================================*
 	 *             CALLBACKS			*

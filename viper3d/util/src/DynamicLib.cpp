@@ -10,13 +10,13 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#include "VDynamicLib.h"
+#include <viper3d/util/DynamicLib.h>
 
 /* System Headers */
 
 /* Local Headers */
-#include "VString.h"
-#include "VLog.h"
+#include <viper3d/util/String.h>
+#include <viper3d/util/Log.h>
 
 namespace UDP
 {

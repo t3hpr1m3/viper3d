@@ -10,12 +10,12 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#if !defined(__VMOVABLE_H_INCLUDED__)
-#define __VMOVABLE_H_INCLUDED__
+#if !defined(__MOVABLE_H_INCLUDED__)
+#define __MOVABLE_H_INCLUDED__
 
-#include "VGlobals.h"
-#include "VMath.h"
-#include "VNode.h"
+#include <viper3d/Globals.h>
+#include <viper3d/Math.h>
+#include <viper3d/Node.h>
 
 namespace UDP
 {
@@ -34,146 +34,201 @@ public:
 	/*==================================*
 	 *	   CONSTRUCTION/DESTRUCTION		*
 	 *==================================*/
-protected:
-	VMovable() {}
+	VMovable();
 public:
 	virtual ~VMovable() {};
-	
-	/*==================================*
-	 *			  ATTRIBUTES			*
-	 *==================================*/
 	/**
-	 *	@brief		Returns the velocity of this object.
+	 *	@brief		Returns the direction the camera is currently looking in.
 	 *	@author		Josh Williams
-	 *	@date		07-Sep-2003
+	 *	@date		11-Sep-2003
 	 *
-	 *	@returns	(VVector) Current velocity of this object.
+	 *	@returns	(Vector) Current viewing direction.
 	 */
-	VVector			GetVelocity() { return mVelocity; }
-	/**
-	 *	@brief		Returns the acceleration of this object.
-	 *	@author		Josh Williams
-	 *	@date		07-Sep-2003
-	 *
-	 *	@returns	(VVector) Current acceleration of this object.
-	 */
-	VVector			GetAcceleration() { return mAcceleration; }
+	const VVector&	GetPosition() const;
+	VVector			GetDirection() const;
+	const VQuaternion&	GetOrientation() const { return mOrientation; }
 
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
+	VVector			SetPosition(const VVector& pNewPosition);
 	/**
-	 *	@brief		Processes any preparation needed for this object.
+	 *	@brief		Directs the camera's point of focus to an object.
 	 *	@author		Josh Williams
-	 *	@date		12-Sep-2003
+	 *	@date		07-Sep-2003
 	 *
-	 *	@remarks	Default implementation is to call collision detection
-	 *				routine for this object and all of it's children/siblings.
+	 *	@remarks	Directs the camera at the supplied object.
+	 *
+	 *	@param		object	Object to be focused on
 	 *
 	 *	@returns	void
 	 */
-	void			Prepare();
+	void			LookAt(VMovable *pObject);
 	/**
-	 *	@brief		Checks for contact between this object and any others.
+	 *	@brief		Directs the camera's point of focus by vector.
 	 *	@author		Josh Williams
-	 *	@date		04-Sep-2003
+	 *	@date		07-Sep-2003
 	 *
-	 *	@remarks	Default implementation checks the bounding spheres of the
-	 *				two objects.  If they intersect, a collision is signaled.
-	 *
-	 *	@param		pObj		Object ot be checked for collisions with.
+	 *	@param		pVector	Point the camera should focus on.
 	 *
 	 *	@returns	void
 	 */
-	void			CheckCollisions(VMovable *pObj);		/**
-	 *	@brief		Initiates animation calculations for this object.
+	void			LookAt(const VVector& pVector);
+	/**
+	 *	@brief		Directs the camera at the point specified.
 	 *	@author		Josh Williams
-	 *	@date		04-Sep-2003
+	 *	@date		10-Sep-2003
 	 *
-	 *	@remarks	Really just a wrapper around the callback OnAnimate().
-	 *
-	 *	@param		deltaTime	Amount of time that has elapsed since the last
-	 *							frame of animation was drawn
+	 *	@param		pX
+	 *	@param		pY
+	 *	@param		pZ	Coordinates to focus on
 	 *
 	 *	@returns	void
 	 */
-	void			Animate(scalar_t pDeltaTime);
+	void			LookAt(scalar_t pX, scalar_t pY, scalar_t pZ);
 	/**
-	 *	@brief		Updates the velocity for this object.
+	 *	@brief		Updates the direction this camera is looking in.
 	 *	@author		Josh Williams
-	 *	@date		09-Sep-2003
+	 *	@date		10-Sep-2003
 	 *
-	 *	@param		pNewVelocity	Updated velocity in vector form
+	 *	@param		pVector	New direction for this vector to view.
 	 *
-	 *	@returns	(VVector) The original velocity.
+	 *	@returns	void
 	 */
-	VVector			SetVelocity(VVector pNewVelocity)
-	{
-		VVector vOld = mVelocity;
-		mVelocity = pNewVelocity;
-		return vOld;
-	}
+	void			SetDirection(const VVector& pVector);
 	/**
-	 *	@brief		Updates the acceleration for this object.
+	 *	@brief		Moves the camera by the specified vector in world
+	 *				coordinates.
 	 *	@author		Josh Williams
-	 *	@date		09-Sep-2003
+	 *	@date		07-Sep-2003
 	 *
-	 *	@param		pNewAccel	New value for acceleration
+	 *	@remarks	Movement is made globally, relative to the origin.
+	 *				Current	rotation, orientation is not taken into account.
 	 *
-	 *	@returns	(VVector) The original acceleration value.
+	 *	@param		pVector	Direction/magnitude to move
+	 *
+	 *	@returns	void
 	 */
-	VVector			SetAcceleration(VVector pNewAccel)
-	{
-		VVector vOld = mAcceleration;
-		mAcceleration = pNewAccel;
-		return vOld;
-	}
+	void			Move(const VVector& pVector);
+	/**
+	 *	@brief		Moves the object relative to it's curent position/orientation.
+	 *	@author		Josh Williams
+	 *	@date		07-Sep-2003
+	 *
+	 *	@remarks	Uses the current orientation to determine the exact movement
+	 *				vector in world coordinates.
+	 *
+	 *	@param		pVector	Direction/magnitude to move in local coordinates
+	 *
+	 *	@returns	void
+	 */
+	void			MoveRelative(const VVector& pVector);
+	/**
+	 *	@brief		Moves the camera to the location of object specified.
+	 *	@author		Josh Williams
+	 *	@date		10-Sep-2003
+	 *
+	 *	@param		pObject	Object whose position we should move to
+	 *
+	 *	@returns	void
+	 */
+	void			MoveTo(VMovable *pObject);
+	/**
+	 *	@brief		Moves the camera to the location specified by vector.
+	 *	@author		Josh Williams
+	 *	@date		07-Sep-2003
+	 *
+	 *	@param		pVector	Position in space camera should occupy
+	 *
+	 *	@returns	void
+	 */
+	void			MoveTo(const VVector& pVector);
+	/**
+	 *	@brief		Moves the camera to the coordinates specified.
+	 *	@author		Josh Williams
+	 *	@date		10-Sep-2003
+	 *
+	 *	@param		pX
+	 *	@param		pY
+	 *	@param		pZ	Coordinates to move to
+	 *
+	 *	@returns	void
+	 */
+	void			MoveTo(scalar_t pX, scalar_t pY, scalar_t pZ);
+	/**
+	 *	@brief		Rotates the camera about the y axis.
+	 *	@author		Josh Williams
+	 *	@date		07-Sep-2003
+	 *
+	 *	@param		pDegrees	Amount of yaw to perform
+	 *
+	 *	@returns	void
+	 */
+	void			RotateYaw(scalar_t pDegrees);
+	/**
+	 *	@brief		Rotates the camera about the x axis.
+	 *	@author		Josh Williams
+	 *	@date		07-Sep-2003
+	 *
+	 *	@param		pDegrees	Amount of pitch to perform.
+	 *
+	 *	@returns	void
+	 */
+	void			RotatePitch(scalar_t pDegrees);
+	/**
+	 *	@brief		Rotates the camera about the z axis.
+	 *	@author		Josh Williams
+	 *	@date		07-Sep-2003
+	 *
+	 *	@param		pDegrees	Amount of roll to perform.
+	 *
+	 *	@returns	void
+	 */
+	void			RotateRoll(scalar_t pDegrees);
+	/**
+	 *	@brief		Rotate the camera about a given axis.
+	 *	@author		Josh Williams
+	 *	@date		11-Sep-2003
+	 *
+	 *	@param		pAxis		Axis to rotate around
+	 *	@param		pDegrees	Amount of rotation to perform
+	 *
+	 *	@returns	void
+	 */
+	void			Rotate(const VVector& pAxis, scalar_t pDegrees);
+	/**
+	 *	@brief		Rotate the camera based on a given quaternion.
+	 *	@author		Josh Williams
+	 *	@date		11-Sep-2003
+	 *
+	 *	@param		pQ	Quaternion to base rotation on
+	 *
+	 *	@returns	void
+	 */
+	void			Rotate(const VQuaternion& pQ);
+	/**
+	 *	@brief		Increases/decreases the speed of the camera.
+	 *	@author		Josh Williams
+	 *	@date		11-Sep-2003
+	 *
+	 *	@param		pDelta	Amount to increase/decrease velocity
+	 *
+	 *	@returns	void
+	 */
+	void			UpdateSpeed(scalar_t pDelta);
+	/**
+	 *	@brief		Updates the view matrix/position, if necessary.
+	 *	@author		Josh Williams
+	 *	@date		11-Sep-2003
+	 *
+	 *	@returns	void
+	 */
 
 protected:
 	/*==================================*
 	 *             CALLBACKS			*
 	 *==================================*/
-	/**
-	 *	@brief		Called when this object is asked to prepare for
-	 *				animation/rendering.
-	 *	@author		Josh Williams
-	 *	@date		12-Sep-2003
-	 *
-	 *	@remarks	Default implementation simply calls the collision
-	 *				dection routine.
-	 *
-	 *	@returns	void
-	 */
-	virtual void	OnPrepare();
-	/**
-	 *	@brief		Handles processing collisions for this object with other
-	 *				objects in the world.
-	 *	@author		Josh Williams
-	 *	@date		04-Sep-2003
-	 *
-	 *	@remarks	Must be overridden.  Instructions on how to handle collisions
-	 *				should be added to the derived object's OnCollision().
-	 *
-	 *	@param		collisionObject	Object in the world we collided with
-	 *
-	 *	@returns	void
-	 */
-	virtual void	OnCollision(VMovable *pCollisionObject) {}
-	/**
-	 *	@brief		Performs actual animation on the object.
-	 *	@author		Josh Williams
-	 *	@date		04-Sep-2003
-	 *
-	 *	@remarks	Should be overridden to provide object specific animation
-	 *				instructions.  Called by the engine every frame to handle
-	 *				object manipulation.
-	 *
-	 *	@param		pDeltaTime	Amount of time that has elapsed since the last
-	 *							frame of animation was drawn.
-	 *
-	 *	@returns	void
-	 */
-	virtual void	OnAnimate(scalar_t pDeltaTime);
+	void			OnRender(){}
 
 private:
 	/*==================================*
@@ -185,12 +240,11 @@ private:
 	 *             VARIABLES            *
 	 *==================================*/
 public:
-	scalar_t		mSpeed;		/**< Object's current speed. */
-	VVector			mVelocity;		/**< Object's speed + direction vector. */
-	VVector			mAcceleration;	/**< Rate of acceleration for this object, if applicable. */
 	VQuaternion		mOrientation;	/**< Rotation of this object relative to it's parent. */
+	VVector			mPosition;		/**< This object's position within the world */
+	bool			mUpdateView;
 };
 
 } // End Namespace
 
-#endif // __VMOVABLE_H_INCLUDED__
+#endif // __MOVABLE_H_INCLUDED__

@@ -10,14 +10,14 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#include "VCPU.h"
+#include <viper3d/util/CPU.h>
 
 /* System Headers */
 #include <cstring>
 
 /* Local Headers */
-#include "VGlobals.h"
-#include "VLog.h"
+#include <viper3d/Globals.h>
+#include <viper3d/util/Log.h>
 
 namespace UDP
 {
@@ -203,13 +203,14 @@ void VCPU::GetCPUVendor()
 #elif VIPER_PLATFORM == PLATFORM_APPLE
 #elif VIPER_PLATFORM == PLATFORM_LINUX
 	__asm__ __volatile__("\n\t"
-			"movl $0, %%eax\n\t"
+			"pushl %%ebx\n\t"
 			"cpuid\n\t"
-			: "=b" (*(int*)&vVendor[0]),
+			"movl %%ebx, %0\n\t"
+			"popl %%ebx\n\t"
+			: "=r" (*(int*)&vVendor[0]),
 			  "=d" (*(int*)&vVendor[4]),
 			  "=c" (*(int*)&vVendor[8])
-			: 
-			: "eax"
+			: "a" (0)
 	);
 #endif
 	vVendor[12] = '\0';
@@ -253,7 +254,49 @@ EXIT:
 #elif VIPER_PLATFORM == PLATFORM_LINUX
 
 	__asm__ __volatile__ ("\n\t"
-		"movl	$1, %%eax\n\t"
+		"pushl	%%ebx\n\t"
+		"cpuid\n\t"
+		"movb	$0, %0\n\t"
+		"test	$0x04000000, %%edx\n\t"
+		"jz		NOSSE2\n\t"
+		"movb	$1, %0\n\t"
+		"NOSSE2:\n\t"
+		"popl	%%ebx\n\t"
+		: "=m" (mSSE2)
+		: "a" (1)
+		: "cx", "dx", "memory"
+	);
+
+	__asm__ __volatile__ ("\n\t"
+		"pushl	%%ebx\n\t"
+		"cpuid\n\t"
+		"movb	$0, %0\n\t"
+		"test	$0x02000000, %%edx\n\t"
+		"jz		NOSSE\n\t"
+		"movb	$1, %0\n\t"
+		"NOSSE:\n\t"
+		"popl	%%ebx\n\t"
+		: "=m" (mSSE)
+		: "a" (1)
+		: "cx", "dx", "memory"
+	);
+
+	__asm__ __volatile__ ("\n\t"
+		"pushl	%%ebx\n\t"
+		"cpuid\n\t"
+		"movb	$0, %0\n\t"
+		"test	$0x00800000, %%edx\n\t"
+		"jz		EXIT\n\t"
+		"movb	$1, %0\n\t"
+		"EXIT:\n\t"
+		"popl	%%ebx\n\t"
+		: "=m" (mMMX)
+		: "a" (1)
+		: "cx", "dx", "memory"
+	);
+/*
+	__asm__ __volatile__ ("\n\t"
+		"pushl	%%ebx\n\t"
 		"cpuid\n\t"
 		"movb	$0,	%0\n\t"
 		"movb	$0,	%1\n\t"
@@ -270,12 +313,14 @@ EXIT:
 		"jz		EXIT\n\t"
 		"movb	$1, %2\n\t"
 		"EXIT:\n\t"
+		"popl %%ebx\n\t"
 		: "=m" (mSSE2),
 		  "=m" (mSSE),
 		  "=m" (mMMX)
-		:
-		: "ax", "bx", "cx", "dx", "memory"
+		: "a" (1)
+		: "cx", "dx", "memory"
 	);
+*/
 #endif
 }
 
@@ -303,6 +348,7 @@ void VCPU::GetExtFeatures()
 
 	/* extended info */
 	__asm__ __volatile__ ("\n\t"
+			"pushl %%ebx\n\t"
 			"movl	$0x80000000, %%eax\n\t"
 			"cpuid\n\t"
 			"cmp	$0x80000000, %%eax\n\t"
@@ -313,11 +359,12 @@ void VCPU::GetExtFeatures()
 			"test	$0x80000000, %%edx\n\t"
 			"jz		EXIT2\n\t"
 			"movb	$1, %1\n\t"
-			"EXIT2:\n"
-			: "=m" (mEXT),
-			  "=m" (m3DNOW)
+			"EXIT2:\n\t"
+			"popl %%ebx\n\t"
+			: "=r" (mEXT),
+			  "=r" (m3DNOW)
 			:
-			: "ax", "bx", "cx", "dx", "memory"
+			: "ax"
 	);
 #endif
 }
@@ -346,9 +393,9 @@ void VCPU::GetIntelInfo(int *pN)
 	__asm__ __volatile__ ("\n\t"
 			"mov	$1, %%eax\n\t"
 			"cpuid\n\t"
-			: "=b" (*pN)
+			: "=c" (*pN)
 			:
-			: "eax", "cx", "dx", "memory"
+			: "eax"
 	);
 	int vM=0;
 	memcpy(&vM, pN, sizeof(char));
@@ -382,9 +429,9 @@ void VCPU::GetAMDInfo(int *pN)
 	__asm__ __volatile__ (
 			"movl	$1, %%eax\n"
 			"cpuid\n"
-			: "=a" (*pN)
+			: "=c" (*pN)
 			:
-			: "bx", "cx", "dx"
+			: "eax"
 	);
 	int vM = 0;
 	memcpy(&vM, pN, sizeof(char));
@@ -404,7 +451,7 @@ void VCPU::GetAMDInfo(int *pN)
 			: "=m" (m3DNOWEX),
 			  "=m" (mMMXEX)
 			:
-			: "ax", "bx", "cx", "dx", "memory"
+			: "ax", "dx", "memory"
 	);
 #endif
 }

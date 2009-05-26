@@ -10,17 +10,33 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#if !defined(__VWINDOW_H_INCLUDED__)
-#define __VWINDOW_H_INCLUDED__
+#if !defined(__WINDOW_H_INCLUDED__)
+#define __WINDOW_H_INCLUDED__
 
 /* System Headers */
+#include <viper3d/Viper3D.h>
+#if VIPER_PLATFORM == PLATFORM_WINDOWS
+#elif VIPER_PLATFORM == PLATFORM_MAC
+#elif VIPER_PLATFORM == PLATFORM_LINUX
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <X11/extensions/xf86vmode.h>
+#endif
 
 /* Local Headers */
-#include "VDynamicLib.h"
-#include "VWindowSystem.h"
 
 namespace UDP
 {
+
+class VWindowOpts
+{
+public:
+	int			mWidth;
+	int			mHeight;
+	bool		mFullScreen;
+};
+
+class VRenderSystem;
 
 /**
  *	@class		VWindow
@@ -36,19 +52,22 @@ public:
 	/*==================================*
 	 *	   CONSTRUCTION/DESTRUCTION		*
 	 *==================================*/
-	VWindow(void);
-	virtual ~VWindow(void);
+	VWindow();
+	virtual ~VWindow();
 
 	/*==================================*
 	 *			  ATTRIBUTES			*
 	 *==================================*/
+	bool				IsFullScreen(void) const;
 
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
-	bool CreateDevice(char *pAPI);
-	void Release(void);
-	VWindowSystem*	GetDevice(void);
+	virtual bool		Create(VWindowOpts *pOpts) = 0;
+	virtual void		Destroy(void) = 0;
+	virtual bool		Resize(VWindowOpts *pOpts) = 0;
+	virtual void		SetCaption(const char *pCaption) = 0;
+	virtual bool		SwapBuffers(void) const = 0;
 
 protected:
 	/*==================================*
@@ -60,19 +79,31 @@ private:
 	 *             INTERNALS            *
 	 *==================================*/
 
-
-private:
+public:
 	/*==================================*
 	 *             VARIABLES            *
 	 *==================================*/
-	VDynamicLib			mWindowLib;
-	VWindowSystem		*mDevice;
-	DLL_WINCREATE		*mCreate;
-	DLL_WINDESTROY		*mDestroy;
-
+#if VIPER_PLATFORM == PLATFORM_WINDOWS
+	HWND					mWin;
+#elif VIPER_PLATFORM == PLATFORM_MAC
+#elif VIPER_PLATFORM == PLATFORM_LINUX
+	Display					*mDpy;
+	int						mScreen;
+	Window					mWin;
+	XVisualInfo				*mVInfo;
+	XSetWindowAttributes	mAttr;
+	XF86VidModeModeInfo		*mMode;
+#endif
+	VWindowOpts				mOpts;
 };
+
+inline
+bool VWindow::IsFullScreen(void) const
+{
+	return mOpts.mFullScreen;
+}
 
 } // End Namespace
 
-#endif // __VWINDOW_H_INCLUDED__
+#endif // __WINDOW_H_INCLUDED__
 

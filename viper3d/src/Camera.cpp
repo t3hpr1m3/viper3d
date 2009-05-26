@@ -10,28 +10,32 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#include "VCamera.h"
+#include <viper3d/Camera.h>
 
 /* System Headers */
 #include <GL/gl.h>
 
 /* Local Headers */
-#include "VProfiler.h"
+#include <viper3d/Profiler.h>
+#include <viper3d/util/Log.h>
+#include <iostream>
+
+using std::cout;
+using std::endl;
 
 namespace UDP
 {
+
+/* Static Variables */
+static char __CLASS__[] = "[    Camera    ]";
 
 /********************************************************************
  *          C O N S T R U C T I O N / D E S T R U C T I O N         *
  ********************************************************************/
 VCamera::VCamera()
+	: VMovable()
 {
-	SetPosition(VVector(0.0, 0.0, 0.0));
-	SetVelocity(VVector(0.0, 0.0, 0.0));
-	SetAcceleration(VVector(0.0, 0.0, 0.0));
-	mUpdateView = true;
 	mUpdateFrustum = true;
-	mOrientation = VMath::QUATERNION_IDENTITY;
 	mViewMatrix = VMatrix::MATRIX_ZERO;
 	mFOV = 45.0f;
 	mNear = 0.1f;
@@ -50,301 +54,9 @@ VCamera::~VCamera()
  *                        A T T R I B U T E S                       *
  ********************************************************************/
 
-/*------------------------------------------------------------------*
- *							GetDirection()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-VVector VCamera::GetDirection()
-{
-	return mOrientation * -VVector::VECTOR_UNIT_Z;
-}
-
 /********************************************************************
  *                        O P E R A T I O N S                       *
  ********************************************************************/
-
-/*------------------------------------------------------------------*
- *								LookAt()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::LookAt(VNode *pObject)
-{
-	this->SetDirection(pObject->GetPosition() - GetPosition());
-}
-
-/*------------------------------------------------------------------*
- *							    LookAt()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::LookAt(const VVector& pVector)
-{
-	this->SetDirection(pVector - GetPosition());
-}
-
-/*------------------------------------------------------------------*
- *								LookAt()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::LookAt(scalar_t pX, scalar_t pY, scalar_t pZ)
-{
-	VVector vTemp(pX, pY, pZ);
-	this->LookAt(vTemp);
-}
-
-/*------------------------------------------------------------------*
- *							 SetDirection()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *		If a zero vector was passed in								*
- *			bail (nothing to do)									*
- *		Normalize the inverse vector								*
- *		If the inverse is equal to our current inverse vector		*
- *			Use yaw rotation										*
- *		Else														*
- *			Find the shortest arc									*
- *		Update our orientation										*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::SetDirection(const VVector& pVec)
-{
-	if (pVec == VVector::VECTOR_ZERO)
-		return;
-
-	VVector vZAdjustVec = -pVec;
-	vZAdjustVec.Normalize();
-
-	VVector vAxes[3];
-	UpdateView();
-	mOrientation.ToAxes(vAxes);
-	VQuaternion vRotQuat;
-
-	if (-vZAdjustVec == vAxes[2])
-	{
-		/*
-		 * 180 degree turn (infinite possible rotation axes)
-		 * Default to yaw ie. use current UP
-		 */
-		vRotQuat.FromAngleAxis(VMath::PI, vAxes[1]);
-	}
-	else
-	{
-		/*
-		 * Derive shortest arc to new direction.
-		 */
-		vRotQuat = vAxes[2].GetRotationTo(vZAdjustVec);
-	}
-
-	mOrientation = vRotQuat * mOrientation;
-
-	mUpdateView = true;
-}
-
-/*------------------------------------------------------------------*
- *								 Move()								*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::Move(const VVector& pVector)
-{
-	SetPosition(GetPosition() + pVector);
-	mUpdateView = true;
-}
-
-/*------------------------------------------------------------------*
- *							MoveRelative()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::MoveRelative(const VVector& pVec)
-{
-	// Transform the axes of the relative vector by camera's local axes
-	VVector vTrans = mOrientation * pVec;
-
-	SetPosition(GetPosition() + vTrans);
-	mUpdateView = true;
-}
-
-/*------------------------------------------------------------------*
- *								MoveTo()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::MoveTo(VNode *pObject)
-{
-	SetPosition(pObject->GetPosition());
-	mUpdateView = true;
-}
-
-/*------------------------------------------------------------------*
- *								MoveTo()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::MoveTo(const VVector& pVec)
-{
-	SetPosition(pVec);
-	mUpdateView = true;
-}
-
-/*------------------------------------------------------------------*
- *								MoveTo()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::MoveTo(scalar_t pX, scalar_t pY, scalar_t pZ)
-{
-	SetPosition(VVector(pX, pY, pZ));
-	mUpdateView = true;
-}
-
-/*------------------------------------------------------------------*
- *							 RotateYaw()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::RotateYaw(scalar_t pDegrees)
-{
-	VVector vYAxis = mOrientation * VVector::VECTOR_UNIT_Y;
-	Rotate(vYAxis, pDegrees);
-}
-
-/*------------------------------------------------------------------*
- *							RotatePitch()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::RotatePitch(scalar_t pDegrees)
-{
-	VVector vXAxis = mOrientation * VVector::VECTOR_UNIT_X;
-	Rotate(vXAxis, pDegrees);
-}
-
-/*------------------------------------------------------------------*
- *							RotateRoll()							*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::RotateRoll(scalar_t pDegrees)
-{
-	VVector vZAxis = mOrientation * VVector::VECTOR_UNIT_Z;
-	Rotate(vZAxis, pDegrees);
-}
-
-/*------------------------------------------------------------------*
- *							  Rotate()								*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::Rotate(const VVector& pAxis, scalar_t pDegrees)
-{
-	VQuaternion vQ;
-	vQ.FromAngleAxis(VMath::DegToRad(pDegrees), pAxis);
-	Rotate(vQ);
-}
-
-/*------------------------------------------------------------------*
- *							  Rotate()								*
- *------------------------------------------------------------------*
- *	ALGORITHM:														*
- *																	*
- *------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VCamera::Rotate(const VQuaternion& pQ)
-{
-	mOrientation = pQ * mOrientation;
-	mUpdateView = true;
-}
 
 /*------------------------------------------------------------------*
  *							UpdateView()							*

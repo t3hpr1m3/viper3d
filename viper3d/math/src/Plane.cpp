@@ -10,7 +10,7 @@
  * -----------  ----------------------------------------------	------------- *
  *                                                                            *
  *============================================================================*/
-#include "VMath.h"
+#include <viper3d/Math.h>
 
 /* System Headers */
 
@@ -25,6 +25,10 @@ namespace UDP
 VPlane::VPlane()
 {
 
+}
+
+VPlane::~VPlane()
+{
 }
 
 VPlane::VPlane(const VVector& vN, const VVector& vP)
@@ -81,12 +85,12 @@ void VPlane::Set(const VVector& v0, const VVector& v1, const VVector& v2)
 	m_fD = -(m_vN * v0);
 	m_vPoint = v0;
 }
-inline
+
 float VPlane::Distance(const VVector& vPoint) const
 {
 	return (VMath::Abs((m_vN * vPoint) - m_fD));
 }
-inline
+
 int VPlane::Classify(const VVector& vPoint) const
 {
 	float f = (vPoint * m_vN) + m_fD;

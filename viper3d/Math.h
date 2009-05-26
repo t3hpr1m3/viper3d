@@ -17,7 +17,7 @@
 #include <iostream>
 
 /* Local Headers */
-#include "VGlobals.h"
+#include <viper3d/Globals.h>
 
 using std::ostream;
 
@@ -132,7 +132,7 @@ public:
 	/*==================================*
 	 *	   CONSTRUCTION/DESTRUCTION		*
 	 *==================================*/
-	VVector(float _x = 0, float _y = 0, float _z = 0);
+	VVector(float _x = 0, float _y = 0, float _z = 0, float _w = 0);
 	VVector(const VVector &vec);
 	~VVector();
 
@@ -192,6 +192,9 @@ public:
 	static const VVector VECTOR_UNIT_X;
 	static const VVector VECTOR_UNIT_Y;
 	static const VVector VECTOR_UNIT_Z;
+	static const VVector VECTOR_DIR_X;
+	static const VVector VECTOR_DIR_Y;
+	static const VVector VECTOR_DIR_Z;
 	static const VVector VECTOR_UNIT_SCALE;
 };
 
@@ -204,7 +207,7 @@ VVector VVector::operator-() const
 inline
 ostream& operator<<(ostream& os, const VVector& vec)
 {
-	os << vec.x << ", " << vec.y << ", " << vec.z << ", " << vec.w;
+	os << "[" << vec.x << ", " << vec.y << ", " << vec.z << ", " << vec.w << "]";
 	return os;
 }
 
@@ -248,6 +251,7 @@ public:
 	void			RotaArbi(const VVector& vAxis, const float& a);
 	void			ApplyInverseRota(VVector *pVec);
 	void			Translate(const float& dx, const float& dy, const float& dz);
+	void			Translate(const VVector& vPos);
 	void			SetTranslation(const VVector& vc, bool EraseContent=false);
 	VVector			GetTranslation();
 	void			Billboard(const VVector& vPos, const VVector& vDir,
@@ -266,6 +270,7 @@ public:
 	void			operator=(const VMatrix &mat);
 	VMatrix			operator-() const;
 	void			MakeGLMatrix(float gl_matrix[16]);
+	friend ostream&	operator<<(ostream& os, const VMatrix& pMat);
 
 protected:
 	/*==================================*
@@ -293,6 +298,25 @@ public:
 	static const VMatrix MATRIX_IDENTITY;
 };
 
+inline
+ostream& operator<<(ostream& os, const VMatrix& pMat)
+{
+	for (int i = 0; i < 4; i++)
+	{
+		os << "[";
+		for (int j = 0; j < 4; j++)
+		{
+			os << pMat[i][j];
+			if (j < 3)
+				os << ", ";
+		}
+		os << "]";
+		if (i < 3)
+			os << std::endl;
+	}
+	return os;
+}
+
 /*============================================================================*/
 
 /**
@@ -313,6 +337,7 @@ public:
 	VQuaternion(float _x = 0.0f, float _y = 0.0f, float _z = 0.0f,
 						float _w = 0.0f);
 	VQuaternion(const VQuaternion& q);
+	VQuaternion(const VVector& v, const float &r);
 	virtual ~VQuaternion() {};
 
 	/*==================================*
@@ -361,6 +386,7 @@ public:
 	VQuaternion&	operator*=(const VQuaternion& q);
 	VQuaternion		operator*(const VQuaternion& q) const;
 	VQuaternion		operator~() const;
+	friend ostream&	operator<<(ostream& os, const VMatrix& pMat);
 
 protected:
 	/*==================================*
@@ -383,6 +409,13 @@ public:
 	float		z;
 	float		w;
 };
+
+inline
+ostream& operator<<(ostream& os, const VQuaternion& pQuat)
+{
+	os << "[" << pQuat.x << ", " << pQuat.y << ", " << pQuat.z << ", " << pQuat.w << "]";
+	return os;
+}
 
 /*============================================================================*/
 

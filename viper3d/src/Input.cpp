@@ -10,12 +10,12 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#include "VInput.h"
+#include <viper3d/Input.h>
 
 /* System Headers */
 
 /* Local Headers */
-#include "VLog.h"
+#include <viper3d/util/Log.h>
 
 namespace UDP
 {
@@ -27,133 +27,26 @@ static char __CLASS__[] = "[    VInput    ]";
  ********************************************************************/
 VInput::VInput(void)
 {
-	mDevice = NULL;
+	mMouseState.mXabs = 0;
+	mMouseState.mYabs = 0;
+	mMouseState.mXrel = 0;
+	mMouseState.mYrel = 0;
+	mMouseState.mXdelta = 0;
+	mMouseState.mYdelta = 0;
 }
 
 VInput::~VInput(void)
 {
-	if (mDevice != NULL)
-		Release();
 }
 
 /********************************************************************
  *                        A T T R I B U T E S                       *
  ********************************************************************/
 
-/*------------------------------------------------------------------*
- *							  GetDevice()							*
- *------------------------------------------------------------------*/
-/**	@brief		Returns a handle to the underlying VInputSystem.
- *	@author		Josh Williams
- *	@date		01-Sep-2004
- *
- *	@remarks	Pointer returned can be used to perform input
- *				checking.
- */
-/*------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-VInputSystem* VInput::GetDevice(void)
-{
-	return mDevice;
-}
 /********************************************************************
  *                        O P E R A T I O N S                       *
  ********************************************************************/
 
-/*------------------------------------------------------------------*
- *							CreateDevice()							*
- *------------------------------------------------------------------*/
-/**	@brief		Creates the specified VInputSystem.
- *	@author		Josh Williams
- *	@date		01-Sep-2004
- *
- *	@param		pAPI	Desired input system (X, DirectInput, etc)
- *
- *	@returns	Success/failure
- *
- *	@remarks	Loads the necessary library into memory and obtains
- *				pointers to the creation and deletion functions.
- *				If successful, function tries to create the specific
- *				VInputSystem object.
- */
-/*------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-bool VInput::CreateDevice(char *pAPI)
-{
-	if (strcmp(pAPI, "X") == 0)
-	{
-		/* try to load the X input library */
-		VTRACE(_CL("Loading X input system\n"));
-		if (!mInputLib.Load("./libs", "VXInput"))
-		{
-			VTRACE(_CL("Unable to load input library\n"));
-			return false;
-		}
-		VTRACE(_CL("Library loaded successfully\n"));
-
-		/* obtain pointer to the creation function */
-		mCreate = static_cast<DLL_INPCREATE*>(mInputLib.GetSymbol("Construct"));
-		if (mCreate == NULL)
-		{
-			VTRACE(_CL("Unable to locate constructor.\n"));
-			return false;
-		}
-
-		/* obtain pointer to the deletion function */
-		mDestroy = static_cast<DLL_INPDESTROY*>(mInputLib.GetSymbol("Destruct"));
-		if (mDestroy == NULL)
-		{
-			VTRACE(_CL("Unable to locate destructor.\n"));
-			return false;
-		}
-
-		/* try to create the actual input device */
-		(*mCreate)(&mDevice);
-		if (mDevice == NULL)
-		{
-			VTRACE(_CL("Unable to create input device.\n"));
-			return false;
-		}
-	}
-	else
-	{
-		VTRACE(_CL("Unknown input system requested\n"));
-		return false;
-	}
-
-	return true;
-}
-
-/*------------------------------------------------------------------*
- *								Release()							*
- *------------------------------------------------------------------*/
-/**	@brief		Calls the destructor for the current VInputSystem.
- *	@author		Josh Williams
- *	@date		01-Sep-2004
- *
- *	@remarks	Does not unload the underlying dynamic library from
- *				memory.
- */
-/*------------------------------------------------------------------*
- * MODIFICATIONS													*
- *	Date		Description							Author			*
- * ===========	==================================	===============	*
- *																	*
- *------------------------------------------------------------------*/
-void VInput::Release(void)
-{
-	VTRACE(_CL("Releasing device...\n"));
-	(*mDestroy)(mDevice);
-	mDevice = NULL;
-}
 /********************************************************************
  *                         C A L L B A C K S                        *
  ********************************************************************/

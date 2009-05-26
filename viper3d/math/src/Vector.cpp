@@ -10,13 +10,13 @@
  * -----------  ----------------------------------------------	------------- *
  *                                                                            *
  *============================================================================*/
-#include "VMath.h"
+#include <viper3d/Math.h>
 
 /* System Headers */
 #include <iostream>
 
 /* Local Headers */
-#include "VCPU.h"
+#include <viper3d/util/CPU.h>
 
 using std::cout;
 using std::endl;
@@ -24,19 +24,21 @@ using std::endl;
 namespace UDP
 {
 
-const VVector	VVector::VECTOR_ZERO(0, 0, 0);
-const VVector	VVector::VECTOR_UNIT_X(1, 0, 0);
-const VVector	VVector::VECTOR_UNIT_Y(0, 1, 0);
-const VVector	VVector::VECTOR_UNIT_Z(0, 0, 1);
-const VVector	VVector::VECTOR_UNIT_SCALE(1, 1, 1);
+const VVector	VVector::VECTOR_ZERO(0, 0, 0, 0);
+const VVector	VVector::VECTOR_UNIT_X(1, 0, 0, 1);
+const VVector	VVector::VECTOR_UNIT_Y(0, 1, 0, 1);
+const VVector	VVector::VECTOR_UNIT_Z(0, 0, 1, 1);
+const VVector	VVector::VECTOR_DIR_X(1, 0, 0, 0);
+const VVector	VVector::VECTOR_DIR_Y(0, 1, 0, 0);
+const VVector	VVector::VECTOR_DIR_Z(0, 0, 1, 0);
+const VVector	VVector::VECTOR_UNIT_SCALE(1, 1, 1, 1);
 
 /********************************************************************
  *          C O N S T R U C T I O N / D E S T R U C T I O N         *
  ********************************************************************/
-VVector::VVector(float _x /*=0*/, float _y /*=0*/, float _z /*=0*/)
-: x(_x), y(_y), z(_z)
+VVector::VVector(float _x /*=0*/, float _y /*=0*/, float _z /*=0*/, float _w /*=0*/)
+: x(_x), y(_y), z(_z), w(_w)
 {
-	w = 1.0f;
 }
 
 VVector::VVector(const VVector& vec)
@@ -602,6 +604,7 @@ const VVector& VVector::operator=(const VVector& vec)
 	x = vec.x;
 	y = vec.y;
 	z = vec.z;
+	w = vec.w;
 
 	return *this;
 }
@@ -1031,7 +1034,7 @@ VVector VVector::operator*(const VMatrix& mat) const
  *------------------------------------------------------------------*/
 VVector VVector::operator+(const VVector& vec) const
 {
-	return VVector(x + vec.x, y + vec.y, z + vec.z);
+	return VVector(x + vec.x, y + vec.y, z + vec.z, 1.0f);
 }
 
 /*------------------------------------------------------------------*

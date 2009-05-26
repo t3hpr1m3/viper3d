@@ -17,6 +17,8 @@
 #define PLATFORM_APPLE		2
 #define PLATFORM_LINUX		3
 
+#if !defined(VIPER_PLATFORM)
+
 #if defined(__WIN32__) || defined(_WIN32)
 #include <windows.h>
 #define VIPER_PLATFORM PLATFORM_WINDOWS
@@ -26,13 +28,15 @@
 #define VIPER_PLATFORM PLATFORM_LINUX
 #endif
 
-#include "VTypes.h"
+#include <viper3d/Types.h>
 
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 #define _ViperExport __declspec( dllexport )
 #elif VIPER_PLATFORM == PLATFORM_APPLE
 #elif VIPER_PLATFORM == PLATFORM_LINUX
 #define _ViperExport
+#endif
+
 #endif
 
 #endif // __GLOBALS_H_INCLUDED__

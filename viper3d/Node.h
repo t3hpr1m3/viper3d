@@ -10,12 +10,12 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#if !defined(__VNODE_H_INCLUDED__)
-#define __VNODE_H_INCLUDED__
+#if !defined(__NODE_H_INCLUDED__)
+#define __NODE_H_INCLUDED__
 
 #include <stdlib.h>
-#include "VGlobals.h"
-#include "VRenderable.h"
+#include <viper3d/Globals.h>
+#include <viper3d/Renderable.h>
 
 namespace UDP
 {
@@ -271,4 +271,4 @@ private:
 };
 } // End Namespace
 
-#endif // __VNODE_H_INCLUDED__
+#endif // __NODE_H_INCLUDED__

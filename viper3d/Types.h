@@ -10,8 +10,8 @@
  * -----------  ----------------------------------------------  ------------- *
  *                                                                            *
  *============================================================================*/
-#if !defined(__VTYPES_H_INCLUDED__)
-#define __VTYPES_H_INCLUDED__
+#if !defined(__TYPES_H_INCLUDED__)
+#define __TYPES_H_INCLUDED__
 
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 #elif VIPER_PLATFORM == PLATFORM_MAC
@@ -155,4 +155,4 @@ public:
 
 } // End Namespace
 
-#endif
+#endif // __TYPES_H_INCLUDED__

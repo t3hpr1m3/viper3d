@@ -14,7 +14,7 @@
 #include <cstdio>
 #include <cassert>
 #include <iostream>
-#include "VProfiler.h"
+#include <viper3d/VProfiler.h>
 
 using std::cout;
 using std::endl;
