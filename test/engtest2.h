@@ -1,5 +1,5 @@
-#include "VMath.h"
-#include "VCPU.h"
+#include <viper3d/Math.h>
+#include <viper3d/util/CPU.h>
 #include <iostream>
 #include <sys/timeb.h>
 
