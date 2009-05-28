@@ -286,7 +286,7 @@ void VQuaternion::CreateMatrix(float *pMatrix) const
  *------------------------------------------------------------------*/
 void VQuaternion::FromAngleAxis(const float& rAngle, const VVector& rAxis)
 {
-	float fHalfAngle = 0.5*rAngle;
+	float fHalfAngle = (float)0.5*rAngle;
 	float fSin		= VMath::Sin(fHalfAngle);
 
 	w = (float)VMath::Cos(fHalfAngle);
@@ -433,7 +433,7 @@ void VQuaternion::GetEulerAngles(float *fRoll, float *fPitch, float *fYaw) const
 	r32 = 2 * (y*z + w*x);
 	r33 = q00 - q11 - q22 + q33;
 
-	temp = VMath::Abs(r31);
+	temp = VMath::Abs((float)r31);
 	if (temp > 0.999999)
 	{
 		r12 = 2 * (x*y - w*z);

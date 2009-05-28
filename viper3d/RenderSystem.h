@@ -68,8 +68,8 @@ public:
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
-	virtual VWindow *		CreateWindow(VWindowOpts *pOpts) = 0;
-	virtual void			DestroyWindow(VWindow *pWin) = 0;
+	virtual VWindow *		CreateWin(VWindowOpts *pOpts) = 0;
+	virtual void			DestroyWin(VWindow *pWin) = 0;
 	virtual bool			Render(VWindow *pWin, VCamera *pCamera) = 0;
 
 protected:

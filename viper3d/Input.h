@@ -67,7 +67,7 @@ public:
 	 *			  OPERATIONS			*
 	 *==================================*/
 	virtual bool	StartCapture(VWindow *pWin) = 0;
-	virtual bool	EndCapture(void) = 0;
+	virtual void	EndCapture(void) = 0;
 
 	virtual bool	Update(void) = 0;
 

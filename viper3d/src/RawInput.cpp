@@ -76,7 +76,7 @@ bool VRawInput::StartCapture(VWindow *pWin)
 	return true;
 }
 
-bool VRawInput::EndCapture(void)
+void VRawInput::EndCapture(void)
 {
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 #elif VIPER_PLATFORM == PLATFORM_MAC

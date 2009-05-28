@@ -21,11 +21,13 @@
 
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 #define WIN32_LEAN_AND_MEAN
+/*
 #include <windows.h>
-#define DYNLIB_HANDLE			hInstance
+*/
+#define DYNLIB_HANDLE			HMODULE
 #define DYNLIB_LOAD( a )		LoadLibrary( a )
 #define DYNLIB_GETSYM( a, b )	GetProcAddress( a, b )
-#define DYNLIB_UNLOAD( a )		!FreeLibrary( a )
+#define DYNLIB_UNLOAD( a )		FreeLibrary( a )
 #define DYNLIB_ERROR( )			strerror(errno)
 #elif VIPER_PLATFORM == PLATFORM_LINUX
 #include <dlfcn.h>

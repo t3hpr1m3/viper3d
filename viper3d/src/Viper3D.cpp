@@ -13,8 +13,6 @@
 #include <viper3d/Viper3D.h>
 
 /* System Headers */
-#include <sys/time.h>
-#include <GL/gl.h>
 
 /* Local Headers */
 #include <viper3d/util/Log.h>

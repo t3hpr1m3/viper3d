@@ -103,7 +103,6 @@ bool VCPU::HaveSSE(void)
  *------------------------------------------------------------------*/
 void VCPU::Init(void)
 {
-	struct	sigaction vSavedSigill;
 	int		vN = 0;
 
 	memset(mName, '\0', sizeof(mName));
@@ -131,9 +130,14 @@ void VCPU::Init(void)
 
 	/* Test for OS SSE support */
 	mOSSSE = true;
+#if VIPER_PLATFORM == PLATFORM_WINDOWS
+#elif VIPER_PLATFORM == PLATFORM_MAC
+#elif VIPER_PLATFORM == PLATFORM_LINUX
+	struct	sigaction vSavedSigill;
 	sigaction(SIGILL, NULL, &vSavedSigill);
 	signal(SIGILL, (void (*)(int))sigill_handler);
 	__asm__ __volatile__ ("xorps %xmm0, %xmm0");
+#endif
 
 	/* Output CPU information to trace file */
 	VTRACE(_CL("============ CPU Info =============\n"));
@@ -198,7 +202,7 @@ void VCPU::GetCPUVendor()
 		mov		esi,		vVendor
 		mov		[esi],		ebx
 		mov		[esi+4],	edx
-		mov		[exi+8],	ecx
+		mov		[esi+8],	ecx
 	}
 #elif VIPER_PLATFORM == PLATFORM_APPLE
 #elif VIPER_PLATFORM == PLATFORM_LINUX

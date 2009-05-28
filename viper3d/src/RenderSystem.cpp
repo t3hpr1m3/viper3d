@@ -13,8 +13,6 @@
 #include <viper3d/RenderSystem.h>
 
 /* System Headers */
-#include <GL/gl.h>
-#include <GL/glx.h>
 #include <viper3d/util/Log.h>
 
 /* Local Headers */

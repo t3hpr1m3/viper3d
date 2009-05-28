@@ -32,6 +32,7 @@ namespace UDP
 {
 
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
+typedef std::map<int, VKeyCode> VKeyMap;
 #elif VIPER_PLATFORM == PLATFORM_MAC
 #elif VIPER_PLATFORM == PLATFORM_LINUX
 typedef std::map<KeySym, VKeyCode> VKeyMap;
@@ -62,7 +63,7 @@ public:
 	 *			  OPERATIONS			*
 	 *==================================*/
 	bool			StartCapture(VWindow *pWin);
-	bool			EndCapture();
+	void			EndCapture(void);
 
 	bool			Update(void);
 
