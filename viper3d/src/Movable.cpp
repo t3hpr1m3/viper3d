@@ -26,7 +26,7 @@ namespace UDP
 VMovable::VMovable()
 {
 	SetPosition(VVector(0.0f, 0.0f, 0.0f, 1.0f));
-	mUpdateView = true;
+	SetDirection(-VVector::VECTOR_UNIT_Z);
 	mOrientation = VMath::QUATERNION_IDENTITY;
 }
 
@@ -96,6 +96,7 @@ VVector VMovable::SetPosition(const VVector& pNewPosition)
 {
 	VVector vOld = mPosition;
 	mPosition = pNewPosition;
+	OnMove();
 	return vOld;
 }
 
@@ -144,8 +145,7 @@ void VMovable::LookAt(const VVector& pVector)
  *------------------------------------------------------------------*/
 void VMovable::LookAt(scalar_t pX, scalar_t pY, scalar_t pZ)
 {
-	VVector vTemp(pX, pY, pZ);
-	this->LookAt(vTemp);
+	this->LookAt(VVector(pX, pY, pZ));
 }
 
 /*------------------------------------------------------------------*
@@ -198,7 +198,7 @@ void VMovable::SetDirection(const VVector& pVec)
 
 	mOrientation = vRotQuat * mOrientation;
 
-	mUpdateView = true;
+	OnRotate();
 }
 
 /*------------------------------------------------------------------*
@@ -215,7 +215,7 @@ void VMovable::SetDirection(const VVector& pVec)
 void VMovable::Move(const VVector& pVector)
 {
 	SetPosition(GetPosition() + pVector);
-	mUpdateView = true;
+	OnMove();
 }
 
 /*------------------------------------------------------------------*
@@ -235,7 +235,6 @@ void VMovable::MoveRelative(const VVector& pVec)
 	VVector vTrans = mOrientation * pVec;
 
 	SetPosition(GetPosition() + vTrans);
-	mUpdateView = true;
 }
 
 /*------------------------------------------------------------------*
@@ -252,7 +251,6 @@ void VMovable::MoveRelative(const VVector& pVec)
 void VMovable::MoveTo(VMovable *pObject)
 {
 	SetPosition(pObject->GetPosition());
-	mUpdateView = true;
 }
 
 /*------------------------------------------------------------------*
@@ -269,7 +267,6 @@ void VMovable::MoveTo(VMovable *pObject)
 void VMovable::MoveTo(const VVector& pVec)
 {
 	SetPosition(pVec);
-	mUpdateView = true;
 }
 
 /*------------------------------------------------------------------*
@@ -286,7 +283,6 @@ void VMovable::MoveTo(const VVector& pVec)
 void VMovable::MoveTo(scalar_t pX, scalar_t pY, scalar_t pZ)
 {
 	SetPosition(VVector(pX, pY, pZ));
-	mUpdateView = true;
 }
 
 /*------------------------------------------------------------------*
@@ -372,7 +368,7 @@ void VMovable::Rotate(const VVector& pAxis, scalar_t pDegrees)
 void VMovable::Rotate(const VQuaternion& pQ)
 {
 	mOrientation = pQ * mOrientation;
-	mUpdateView = true;
+	OnRotate();
 }
 
 

@@ -13,6 +13,7 @@
 #include <viper3d/Math.h>
 
 /* System Headers */
+#include <cstring>
 
 /* Local Headers */
 

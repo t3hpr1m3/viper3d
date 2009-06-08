@@ -535,7 +535,7 @@ float VVector::DotProduct(const VVector& vec) const
 }
 
 /*------------------------------------------------------------------*
- *								Cross()								*
+ *							GetRotationTo()							*
  *------------------------------------------------------------------*/
 /**
  *	@brief		Computes a rotation Quaternion that represents the

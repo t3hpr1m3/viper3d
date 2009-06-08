@@ -228,7 +228,9 @@ protected:
 	/*==================================*
 	 *             CALLBACKS			*
 	 *==================================*/
-	void			OnRender(){}
+	virtual void	OnMove(){};
+	virtual void	OnRotate(){};
+	virtual void	OnRender(){};
 
 private:
 	/*==================================*
@@ -242,7 +244,6 @@ private:
 public:
 	VQuaternion		mOrientation;	/**< Rotation of this object relative to it's parent. */
 	VVector			mPosition;		/**< This object's position within the world */
-	bool			mUpdateView;
 };
 
 } // End Namespace

@@ -116,6 +116,8 @@ protected:
 	 *	@returns	void
 	 */
 	void			OnRender();
+	void			OnMove();
+	void			OnRotate();
 	/**
 	 *	@brief		Dumps the Camera's current axis/rotation/position
 	 *	@author		Josh Williams
@@ -152,8 +154,19 @@ public:
 	scalar_t	mFrustrumW;
 	scalar_t	mFrustrumH;
 	bool		mUpdateFrustum;
+	bool		mUpdateView;
 	VMatrix		mViewMatrix;
 };
+
+inline
+void VCamera::OnMove() {
+	mUpdateView = true;
+}
+
+inline
+void VCamera::OnRotate() {
+	mUpdateView = true;
+}
 
 } // End Namespace
 
