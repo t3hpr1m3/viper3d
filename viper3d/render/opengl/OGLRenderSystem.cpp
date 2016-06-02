@@ -169,7 +169,7 @@ void VOGLRenderSystem::Shutdown(void)
 #endif
 }
 
-VWindow* VOGLRenderSystem::CreateWindow(VWindowOpts *pOpts)
+VWindow* VOGLRenderSystem::CreateWin(VWindowOpts *pOpts)
 {
 #if VIPER_PLATFORM == PLATFORM_WINDOWS
 #elif VIPER_PLATFORM == PLATFORM_MAC
@@ -214,7 +214,7 @@ VWindow* VOGLRenderSystem::CreateWindow(VWindowOpts *pOpts)
 #endif
 }
 
-void VOGLRenderSystem::DestroyWindow(VWindow *pWin)
+void VOGLRenderSystem::DestroyWin(VWindow *pWin)
 {
 	pWin->Destroy();
 	delete pWin;

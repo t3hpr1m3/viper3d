@@ -13,6 +13,7 @@
 #include <viper3d/util/Log.h>
 
 /* System Headers */
+#include <cstring>
 
 /* Local Headers */
 

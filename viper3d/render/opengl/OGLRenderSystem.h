@@ -57,8 +57,8 @@ public:
 	/*==================================*
 	 *			  OPERATIONS			*
 	 *==================================*/
-	VWindow*		CreateWindow(VWindowOpts *pOpts);
-	void			DestroyWindow(VWindow *pWin);
+	VWindow*		CreateWin(VWindowOpts *pOpts);
+	void			DestroyWin(VWindow *pWin);
 	bool			Render(VWindow *pWin, VCamera *pCamera);
 
 protected:

@@ -38,7 +38,10 @@ static char __CLASS__[] = "[     VCPU     ]";
 #include <signal.h>
 static void sigill_handler(int signal, struct sigcontext sc)
 {
+	cout << "sigill_handler" << endl;
+	/*
 	sc.eip += 3;
+	*/
 	UDP::VCPU::mOSSSE = false;
 }
 #endif
@@ -141,7 +144,7 @@ void VCPU::Init(void)
 
 	/* Output CPU information to trace file */
 	VTRACE(_CL("============ CPU Info =============\n"));
-	VTRACE(_CL("Vendor:         %s\n"), mVendor);
+	//VTRACE(_CL("Vendor:         %s\n"), mVendor);
 	VTRACE(_CL("\n"));
 	VTRACE(_CL("Base features: "));
 	if (mSSE)	VTRACE(" SSE");
@@ -207,10 +210,10 @@ void VCPU::GetCPUVendor()
 #elif VIPER_PLATFORM == PLATFORM_APPLE
 #elif VIPER_PLATFORM == PLATFORM_LINUX
 	__asm__ __volatile__("\n\t"
-			"pushl %%ebx\n\t"
+			"pushq %%rbx\n\t"
 			"cpuid\n\t"
 			"movl %%ebx, %0\n\t"
-			"popl %%ebx\n\t"
+			"popq %%rbx\n\t"
 			: "=r" (*(int*)&vVendor[0]),
 			  "=d" (*(int*)&vVendor[4]),
 			  "=c" (*(int*)&vVendor[8])
@@ -258,42 +261,42 @@ EXIT:
 #elif VIPER_PLATFORM == PLATFORM_LINUX
 
 	__asm__ __volatile__ ("\n\t"
-		"pushl	%%ebx\n\t"
+		"pushq	%%rbx\n\t"
 		"cpuid\n\t"
 		"movb	$0, %0\n\t"
 		"test	$0x04000000, %%edx\n\t"
 		"jz		NOSSE2\n\t"
 		"movb	$1, %0\n\t"
 		"NOSSE2:\n\t"
-		"popl	%%ebx\n\t"
+		"popq	%%rbx\n\t"
 		: "=m" (mSSE2)
 		: "a" (1)
 		: "cx", "dx", "memory"
 	);
 
 	__asm__ __volatile__ ("\n\t"
-		"pushl	%%ebx\n\t"
+		"pushq	%%rbx\n\t"
 		"cpuid\n\t"
 		"movb	$0, %0\n\t"
 		"test	$0x02000000, %%edx\n\t"
 		"jz		NOSSE\n\t"
 		"movb	$1, %0\n\t"
 		"NOSSE:\n\t"
-		"popl	%%ebx\n\t"
+		"popq	%%rbx\n\t"
 		: "=m" (mSSE)
 		: "a" (1)
 		: "cx", "dx", "memory"
 	);
 
 	__asm__ __volatile__ ("\n\t"
-		"pushl	%%ebx\n\t"
+		"pushq	%%rbx\n\t"
 		"cpuid\n\t"
 		"movb	$0, %0\n\t"
 		"test	$0x00800000, %%edx\n\t"
 		"jz		EXIT\n\t"
 		"movb	$1, %0\n\t"
 		"EXIT:\n\t"
-		"popl	%%ebx\n\t"
+		"popq	%%rbx\n\t"
 		: "=m" (mMMX)
 		: "a" (1)
 		: "cx", "dx", "memory"
@@ -352,7 +355,7 @@ void VCPU::GetExtFeatures()
 
 	/* extended info */
 	__asm__ __volatile__ ("\n\t"
-			"pushl %%ebx\n\t"
+			"pushq %%rbx\n\t"
 			"movl	$0x80000000, %%eax\n\t"
 			"cpuid\n\t"
 			"cmp	$0x80000000, %%eax\n\t"
@@ -364,7 +367,7 @@ void VCPU::GetExtFeatures()
 			"jz		EXIT2\n\t"
 			"movb	$1, %1\n\t"
 			"EXIT2:\n\t"
-			"popl %%ebx\n\t"
+			"popq %%rbx\n\t"
 			: "=r" (mEXT),
 			  "=r" (m3DNOW)
 			:

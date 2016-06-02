@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
 	pOpts.mWidth = 800;
 	pOpts.mHeight = 600;
 	pOpts.mFullScreen = false;
-	VWindow *vWin = vRenderer->CreateWindow(&pOpts);
+	VWindow *vWin = vRenderer->CreateWin(&pOpts);
 	vWin->SetCaption("OpenGL test");
 	float vRotScale = 0.5f;
 	float vMoveScale = 5.0f;
@@ -99,7 +99,7 @@ int main(int argc, char *argv[])
 		}
 		vInput.EndCapture();
 		cout << "Destroying Window" << endl;
-		vRenderer->DestroyWindow(vWin);
+		vRenderer->DestroyWin(vWin);
 	}
 
 	cout << "Destroying Renderer" << endl;
